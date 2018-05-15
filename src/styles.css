@@ -1,0 +1,5 @@
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+.margin-r {
+  margin-right: 20px;
+}
