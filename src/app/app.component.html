@@ -1,11 +1,14 @@
-
 <mat-toolbar color="primary">
   <mat-toolbar-row>
     <span class="margin-r">ZH BET</span>
-    <div class="button-row">
-      <button mat-raised-button routerLink="home">Home</button>
-      <button mat-raised-button routerLink="matches">Matches</button>
+    <div class="button-row fill-remaining" *ngIf="user">
+      <button mat-button routerLink="home">Home</button>
+      <button mat-button routerLink="matches">Matches</button>
     </div>
+    <span *ngIf="user">
+      <span>Welcome {{ user.name }}</span>
+      <button mat-button (click)="logout()">Logout</button>
+    </span>
   </mat-toolbar-row>
 </mat-toolbar>
 

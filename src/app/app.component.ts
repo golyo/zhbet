@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import {Router} from '@angular/router';
+import {AuthService} from './service/auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,17 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app';
+  constructor(private authService: AuthService, private router: Router) {
+  }
+
+  logout(): void {
+    this.authService.logout().then(() => {
+      this.router.navigateByUrl('/login').then(() => {
+      });
+    });
+  }
+
+  get user() {
+    return this.authService.user;
+  }
 }
