@@ -3,13 +3,14 @@ import {NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
 import {
+  ErrorStateMatcher,
   MatButtonModule,
-  MatCardModule,
+  MatCardModule, MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
-  MatInputModule, MatListModule, MatSidenavModule,
+  MatInputModule, MatListModule, MatSidenavModule, MatSortModule,
   MatTableModule,
-  MatToolbarModule
+  MatToolbarModule, ShowOnDirtyErrorStateMatcher
 } from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {PageNotFoundComponent} from './pages/page-not-found/page-not-found.component';
@@ -24,6 +25,11 @@ import {LoginComponent} from './pages/login/login.component';
 import {AuthService} from './service/auth/auth.service';
 import {appRoutes} from './app.routing';
 import {AuthorizationGuard} from './pages/login/authorization-guard';
+import { TeamComponent } from './pages/team/team.component';
+import {TeamService} from './service/team/team-service';
+import { NewTeamComponent } from './pages/team/new-team/new-team.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { MatchContextComponent } from './pages/match-context/match-context.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +37,10 @@ import {AuthorizationGuard} from './pages/login/authorization-guard';
     PageNotFoundComponent,
     HomeComponent,
     MatchesComponent,
-    LoginComponent
+    LoginComponent,
+    TeamComponent,
+    NewTeamComponent,
+    MatchContextComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -50,12 +59,21 @@ import {AuthorizationGuard} from './pages/login/authorization-guard';
     MatFormFieldModule,
     MatInputModule,
     MatTableModule,
+    MatSortModule,
     MatSidenavModule,
-    MatListModule
+    MatListModule,
+    MatDialogModule,
+    FormsModule,
+    ReactiveFormsModule
+  ],
+  entryComponents: [
+    NewTeamComponent
   ],
   providers: [
+    {provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher},
     AuthorizationGuard,
-    AuthService
+    AuthService,
+    TeamService
   ],
   bootstrap: [AppComponent]
 })

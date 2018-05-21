@@ -1,0 +1,47 @@
+import {Component, Inject, OnInit} from '@angular/core';
+import {Team} from '../../../service/matches/match.dto';
+import {ErrorStateMatcher, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {TeamService} from '../../../service/team/team-service';
+import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
+@Component({
+  selector: 'app-new-team',
+  templateUrl: './new-team.component.html',
+  styleUrls: ['./new-team.component.css']
+})
+export class NewTeamComponent implements OnInit {
+  team: Team;
+  nameControl = new FormControl('', [Validators.required]);
+  matcher = new MyErrorStateMatcher();
+
+  constructor(private dialogRef: MatDialogRef<NewTeamComponent>, @Inject(MAT_DIALOG_DATA) public data: any,
+              private service: TeamService) {
+    this.team = data.team || new Team();
+    this.nameControl.setValue(this.team.name);
+  }
+
+  ngOnInit() {
+  }
+
+  save() {
+    if (this.nameControl.valid) {
+      this.team.name = this.nameControl.value;
+      console.log('TRY TO SAVE', this.team);
+      this.service.updateItem(this.team).then(() => {
+        this.dialogRef.close(this.team);
+      });
+    } else {
+      console.log('VALIDATION failed');
+    }
+  }
+
+  close() {
+    this.dialogRef.close();
+  }
+}

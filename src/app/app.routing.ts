@@ -4,6 +4,7 @@ import {PageNotFoundComponent} from './pages/page-not-found/page-not-found.compo
 import {Routes} from '@angular/router';
 import {HomeComponent} from './pages/home/home.component';
 import {AuthorizationGuard} from './pages/login/authorization-guard';
+import {TeamComponent} from './pages/team/team.component';
 
 export const appRoutes: Routes = [
   {
@@ -13,6 +14,10 @@ export const appRoutes: Routes = [
   }, {
     path: 'login',
     component: LoginComponent
+  }, {
+    path: 'team',
+    component: TeamComponent,
+    canActivate: [AuthorizationGuard],
   }, {
     path: 'home',
     component: HomeComponent,

@@ -6,6 +6,7 @@ export class Match {
 }
 
 export class Team {
+  id: string;
   name: string;
   point: number;
 }

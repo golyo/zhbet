@@ -8,8 +8,17 @@ export class MatchContext {
   rule: PointRule;
 }
 
+export class MatchDetailsContextDto {
+  id: string;
+  rootContext: string;
+  parentContext: string;
+  name: string;
+}
+
 export class Round {
   id: string;
+  parentContext: string;
+  rootContext: string;
   name: string;
   matches: Array<Match>;
   isActive: boolean;
