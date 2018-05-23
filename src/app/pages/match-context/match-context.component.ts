@@ -4,8 +4,9 @@ import {ContextService} from '../../service/context/context.service';
 import {Team} from '../../service/matches/match.dto';
 import {NewTeamComponent} from '../team/new-team/new-team.component';
 import {RootContextChoiceModalComponent} from './root-context-choice-modal/root-context-choice-modal.component';
-import {MatchContext} from '../../service/context/context.dto';
+import {MatchContext, RootContext} from '../../service/context/context.dto';
 import {NewContextModalComponent} from './new-context-modal/new-context-modal.component';
+import {NewRootContextModalComponent} from './new-root-context-modal/new-root-context-modal.component';
 
 @Component({
   selector: 'app-match-context',
@@ -13,33 +14,26 @@ import {NewContextModalComponent} from './new-context-modal/new-context-modal.co
   styleUrls: ['./match-context.component.css']
 })
 export class MatchContextComponent implements OnInit {
-  context: MatchContext;
+  context: RootContext;
 
   constructor(private service: ContextService, private dialog: MatDialog) {
   }
 
   ngOnInit() {
-    this.service.getSelectedContext().subscribe(context => this.context = context);
+    this.service.getSelectedContext().subscribe(context => {
+      this.context = context;
+    });
   }
 
   openChoiceDialog() {
-    const dialogRef = this.dialog.open(RootContextChoiceModalComponent, {
+    this.dialog.open(RootContextChoiceModalComponent, {
       width: '500px',
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && (!this.context || this.context.id !== result)) {
-        this.service.selectedRoot = result;
-      }
     });
   }
 
   openNewRootDialog() {
-    const dialogRef = this.dialog.open(NewContextModalComponent, {
+    this.dialog.open(NewRootContextModalComponent, {
       width: '500px',
-      data: {
-        parent: 'ROOT'
-      }
     });
   }
 }

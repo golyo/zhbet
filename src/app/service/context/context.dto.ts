@@ -1,46 +1,46 @@
 import {Match} from '../matches/match.dto';
 import {PointRule} from './rule.dto';
 
-export class MatchRootContextDto {
-  id: string;
-  game: string;
+export class RootContextDto {
+  type: string;
   year: number;
+  name: string;
+  id: string;
+  isActive: boolean;
   rule: PointRule;
+  constructor(year?: number, type?: string) {
+    this.year = year;
+    this.type = type;
+    this.rule = new PointRule();
+  }
 }
 
 export class MatchContextDto {
-  constructor(id?: string, root?: string, parent?: string, name?: string, year?: number) {
-    this.id = id;
-    this.root = root;
-    this.parent = parent;
-    this.name = name;
-    this.year = year;
-  }
-
   id: string;
   name: string;
-  year: number;
-  root: string;
   parent: string;
+
+
+  constructor(parent?: string, name?: string) {
+    this.parent = parent;
+    this.name = name;
+  }
 }
 
 export class MatchContext {
   id: string;
   name: string;
-  year: number;
   parent: MatchContext;
   children: Array<MatchContext>;
-  isActive: boolean;
 
-  constructor(id?: string, name?: string, year?: number) {
+  constructor(id?: string, name?: string) {
     this.id = id;
     this.name = name;
-    this.year = year;
     this.children = [];
   }
 
   static createFromDto(matchDto: MatchContextDto) {
-    return new MatchContext(matchDto.id, matchDto.name, matchDto.year);
+    return new MatchContext(matchDto.id, matchDto.name);
   }
 
   get rootId() {
@@ -48,23 +48,44 @@ export class MatchContext {
   }
 
   add(parentId: string, context: MatchContext) {
+    console.log('Try to add', parentId, context, this);
     const parent = this.find(parentId);
     parent.children.push(context);
     context.parent = parent;
   }
 
   find(id: string): MatchContext {
-    for (let i = 0; i < this.children.length; i++) {
-      if (this.children[i].id === id) {
-        return this.children[i];
-      } else {
+    if (this.id === id) {
+      return this;
+    } else {
+      for (let i = 0; i < this.children.length; i++) {
         const find = this.children[i].find(id);
         if (find) {
           return find;
         }
       }
+      return undefined;
     }
-    return undefined;
+  }
+}
+
+export class RootContext extends MatchContext {
+  type: string;
+  year: number;
+  isActive: boolean;
+  rule: PointRule;
+  constructor(type?: string, year?: number) {
+    super(year + '_' + type, year + ' ' + type);
+    this.type = type;
+    this.year = year;
+    this.rule = new PointRule();
+  }
+
+  static fromDto(contextDto: RootContextDto) {
+    const context = new RootContext(contextDto.type, contextDto.year);
+    context.rule = contextDto.rule;
+    context.children = [];
+    return context;
   }
 }
 

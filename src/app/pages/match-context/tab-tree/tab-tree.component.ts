@@ -16,7 +16,6 @@ export class TabTreeComponent {
   }
 
   onSelectTab(event) {
-    console.log('On Select tab', event);
   }
 
   addNewGroup() {

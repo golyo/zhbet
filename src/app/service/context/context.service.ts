@@ -1,37 +1,35 @@
 import {Injectable} from '@angular/core';
-import {MatchContext, MatchContextDto} from './context.dto';
+import {MatchContext, MatchContextDto, RootContext, RootContextDto} from './context.dto';
 import {Match, MatchResult} from '../matches/match.dto';
 import {AngularFirestore, AngularFirestoreCollection} from 'angularfire2/firestore';
-import {BehaviorSubject, Observable, throwError} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {fromPromise} from 'rxjs/internal/observable/fromPromise';
+import {BehaviorSubject, Observable, of, Subscription, throwError} from 'rxjs';
+import {map, tap} from 'rxjs/internal/operators';
 
 const CONTEXT_KEY = 'ZHBET_CONTEXT';
 
 @Injectable()
 export class ContextService {
-  private itemsCollection: AngularFirestoreCollection<MatchContextDto>;
+  private rootContextCollection: AngularFirestoreCollection<MatchContextDto>;
   private _selectedRoot: string;
-  private contextSubject = new BehaviorSubject<MatchContext>(undefined);
+  private contextSubscription: Subscription;
+  private contextSubject = new BehaviorSubject<RootContext>(undefined);
 
   constructor(protected store: AngularFirestore) {
-    this.itemsCollection = this.store.collection<MatchContextDto>('matchContext');
+    this.rootContextCollection = this.store.collection<MatchContextDto>('rootContext');
     this._selectedRoot = localStorage.getItem(CONTEXT_KEY);
     this.changeContext();
   }
 
-  getRoots(): Observable<Array<MatchContextDto>> {
-    return this.store.collection<MatchContextDto>('matchContext', ref => ref.where('parent', '==', 'ROOT'))
-      .snapshotChanges().pipe(map(actions => {
-        return actions.map(a => {
-          const data = a.payload.doc.data() as MatchContextDto;
-          data.id = a.payload.doc.id;
-          return data;
-        });
-      }));
+  getRoots(): Observable<Array<RootContextDto>> {
+    return this.store.collection<RootContextDto>('rootContext').valueChanges().pipe(tap(rootDtos => {
+      rootDtos.forEach(dto => {
+        dto.id = dto.year + '_' + dto.type;
+        dto.name = dto.year + ' ' + dto.type;
+      });
+    }));
   }
 
-  getSelectedContext(): Observable<MatchContext> {
+  getSelectedContext(): Observable<RootContext> {
     if (!this.selectedRoot) {
       throwError('select root first');
     } else {
@@ -50,53 +48,56 @@ export class ContextService {
     this.changeContext();
   }
 
-  addContext(root: string, parent: string, name: string, year?: number): Observable<void> {
-    const isRoot = parent === 'ROOT';
-    if (isRoot) {
-      name = year + ' ' + name;
-    }
-    const id = isRoot ? name.replace(' ', '_') : root + '_' + name.replace(' ', '_');
+  addRootContext(year: number, type: string): void {
+    const id = year + '_' + type;
     const dbObject = {
-      root: root || id,
+      year: year,
+      type: type
+    };
+    this.rootContextCollection.doc(id).set(dbObject).then(() => {
+      this.selectedRoot = id;
+      this.contextSubject.next(new RootContext(type, year));
+    });
+  }
+
+  addContext(parent: string, name: string): void {
+    const id = this._selectedRoot + '_' + name.replace(' ', '_');
+    const dbObject = {
       parent: parent,
       name: name,
-    } as MatchContextDto;
-    if (year) {
-      dbObject.year = year;
-    }
-    return fromPromise(this.itemsCollection.doc(id).set(dbObject)).pipe(map(() => {
-      const context = new MatchContext(id, dbObject.name, dbObject.year);
-      if (parent === 'ROOT') {
-        this._selectedRoot = context.id;
-        localStorage.setItem(CONTEXT_KEY, context.id);
-        this.contextSubject.next(context);
-      }
-    }));
+    };
+    this.rootContextCollection.doc(this._selectedRoot).collection('matchContext').doc(id).set(dbObject).then();
   }
 
   private changeContext() {
-    console.log('CHANGE CONTEXT');
     if (this._selectedRoot && (!this.contextSubject.value || this.contextSubject.value.id !== this._selectedRoot)) {
-      this.store.collection<MatchContextDto>('matchContext', ref => ref.where('root', '==', this.selectedRoot))
-        .snapshotChanges().pipe(map(actions => {
-        return actions.map(a => {
-          const data = a.payload.doc.data() as MatchContextDto;
-          data.id = a.payload.doc.id;
-          return data;
-        });
-      })).subscribe(contexts => {
-        this.contextSubject.next(this.buildRootContext(contexts));
+      if (this.contextSubscription) {
+        this.contextSubscription.unsubscribe();
+      }
+      this.rootContextCollection.doc<RootContextDto>(this._selectedRoot).valueChanges().subscribe(rootDto => {
+        if (rootDto) {
+          this.contextSubscription = this.store.collection<MatchContextDto>('rootContext/' + this._selectedRoot + '/matchContext')
+            .valueChanges().pipe(tap(contexts => {
+            contexts.forEach((context) => {
+              context.id = this._selectedRoot + '_' + context.name.replace(' ', '_');
+            });
+          })).subscribe(contexts => {
+            const root = RootContext.fromDto(rootDto);
+            this.buildRootContext(root, contexts);
+            this.contextSubject.next(root);
+            console.log('CONTEXT READY', root);
+          });
+        } else {
+          // not found
+          delete this._selectedRoot;
+        }
       });
     }
   }
 
-  private buildRootContext(contexts: Array<MatchContextDto>): MatchContext {
-    if (contexts.length === 0) {
-      return null;
-    } else {
-      const root = MatchContext.createFromDto(contexts.find(context => context.id === contexts[0].root));
+  private buildRootContext(root: RootContext, contexts: Array<MatchContextDto>): void {
+    if (contexts.length > 0) {
       this.buildMatchContextChildren(root, contexts);
-      return root;
     }
   }
 

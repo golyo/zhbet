@@ -19,6 +19,9 @@ export const appRoutes: Routes = [
     path: 'team',
     component: TeamComponent,
     canActivate: [AuthorizationGuard],
+    data: {
+      checkContext: true
+    }
   }, {
     path: 'context',
     component: MatchContextComponent,

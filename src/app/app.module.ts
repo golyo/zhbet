@@ -34,6 +34,7 @@ import {RootContextChoiceModalComponent} from './pages/match-context/root-contex
 import {ContextService} from './service/context/context.service';
 import {TabTreeComponent} from './pages/match-context/tab-tree/tab-tree.component';
 import {NewContextModalComponent} from './pages/match-context/new-context-modal/new-context-modal.component';
+import {NewRootContextModalComponent} from './pages/match-context/new-root-context-modal/new-root-context-modal.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import {NewContextModalComponent} from './pages/match-context/new-context-modal/
     MatchContextComponent,
     RootContextChoiceModalComponent,
     NewContextModalComponent,
+    NewRootContextModalComponent,
     TabTreeComponent
   ],
   imports: [
@@ -78,7 +80,8 @@ import {NewContextModalComponent} from './pages/match-context/new-context-modal/
   entryComponents: [
     NewTeamComponent,
     RootContextChoiceModalComponent,
-    NewContextModalComponent
+    NewContextModalComponent,
+    NewRootContextModalComponent
   ],
   providers: [
     {provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher},

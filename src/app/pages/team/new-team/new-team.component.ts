@@ -28,12 +28,9 @@ export class NewTeamComponent implements OnInit {
   save() {
     if (this.nameControl.valid) {
       this.team.name = this.nameControl.value;
-      console.log('TRY TO SAVE', this.team);
       this.service.updateItem(this.team).then(() => {
         this.dialogRef.close(this.team);
       });
-    } else {
-      console.log('VALIDATION failed');
     }
   }
 
