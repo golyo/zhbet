@@ -5,6 +5,7 @@ import {Routes} from '@angular/router';
 import {HomeComponent} from './pages/home/home.component';
 import {AuthorizationGuard} from './pages/login/authorization-guard';
 import {TeamComponent} from './pages/team/team.component';
+import {MatchContextComponent} from './pages/match-context/match-context.component';
 
 export const appRoutes: Routes = [
   {
@@ -17,6 +18,10 @@ export const appRoutes: Routes = [
   }, {
     path: 'team',
     component: TeamComponent,
+    canActivate: [AuthorizationGuard],
+  }, {
+    path: 'context',
+    component: MatchContextComponent,
     canActivate: [AuthorizationGuard],
   }, {
     path: 'home',

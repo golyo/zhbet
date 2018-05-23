@@ -34,7 +34,7 @@ export class TeamComponent implements OnInit {
   }
 
   openDialog(team?: Team) {
-    let dialogRef = this.dialog.open(NewTeamComponent, {
+    const dialogRef = this.dialog.open(NewTeamComponent, {
       width: '500px',
       // height: '250px',
       data: { team: team }

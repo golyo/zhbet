@@ -1,15 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {Team} from '../../../service/matches/match.dto';
-import {ErrorStateMatcher, MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {TeamService} from '../../../service/team/team-service';
-import {FormControl, FormGroupDirective, NgForm, Validators} from '@angular/forms';
+import {FormControl, Validators} from '@angular/forms';
+import {ZhBetErrorStateMatcher} from '../../../util/error-state-matcher';
 
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
+
 @Component({
   selector: 'app-new-team',
   templateUrl: './new-team.component.html',
@@ -18,7 +14,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 export class NewTeamComponent implements OnInit {
   team: Team;
   nameControl = new FormControl('', [Validators.required]);
-  matcher = new MyErrorStateMatcher();
+  matcher = new ZhBetErrorStateMatcher();
 
   constructor(private dialogRef: MatDialogRef<NewTeamComponent>, @Inject(MAT_DIALOG_DATA) public data: any,
               private service: TeamService) {

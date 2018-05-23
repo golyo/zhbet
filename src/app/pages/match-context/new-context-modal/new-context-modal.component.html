@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>Create new context</h2>
+<mat-dialog-content>
+  <div *ngIf="data.parent !== 'ROOT'">
+    <div>
+      <mat-form-field appearance="standard">
+        <mat-label>Root</mat-label>
+        <input matInput placeholder="name" disabled="true" value="{{ data.root }}">
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="standard">
+        <mat-label>Parent</mat-label>
+        <input matInput placeholder="name" disabled="true" value="{{ data.parent }}">
+      </mat-form-field>
+    </div>
+  </div>
+  <div *ngIf="data.parent === 'ROOT'">
+    <div>
+      <mat-form-field appearance="standard">
+        <mat-label>Year</mat-label>
+        <input matInput placeholder="name" [formControl]="yearControl" [errorStateMatcher]="matcher" type="number">
+        <mat-error *ngIf="yearControl.hasError('required')">
+          Please enter a year of game
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="standard">
+        <mat-label>Context type</mat-label>
+        <mat-select placeholder="Context" [formControl]="nameControl">
+          <mat-option value="EB">EB</mat-option>
+          <mat-option value="VB">VB</mat-option>
+        </mat-select>
+        <mat-error *ngIf="nameControl.hasError('required')">
+          Please select type
+        </mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+  <div *ngIf="data.parent !== 'ROOT'">
+    <mat-form-field appearance="standard">
+      <mat-label>Group name</mat-label>
+      <input matInput placeholder="Group name" [formControl]="nameControl">
+      <mat-error *ngIf="nameControl.hasError('required')">
+        Please add group name
+      </mat-error>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="createNew()">Create</button>
+  <button mat-raised-button (click)="close()">Cancel</button>
+</mat-dialog-actions>

@@ -1,4 +1,7 @@
 export class Match {
+  id: string;
+  root: string;
+  parent: string;
   home: Team;
   away: Team;
   start: Date;

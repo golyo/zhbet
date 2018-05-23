@@ -8,8 +8,8 @@ import {
   MatCardModule, MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
-  MatInputModule, MatListModule, MatSidenavModule, MatSortModule,
-  MatTableModule,
+  MatInputModule, MatListModule, MatSelectModule, MatSidenavModule, MatSortModule,
+  MatTableModule, MatTabsModule,
   MatToolbarModule, ShowOnDirtyErrorStateMatcher
 } from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -30,6 +30,10 @@ import {TeamService} from './service/team/team-service';
 import { NewTeamComponent } from './pages/team/new-team/new-team.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { MatchContextComponent } from './pages/match-context/match-context.component';
+import {RootContextChoiceModalComponent} from './pages/match-context/root-context-choice-modal/root-context-choice-modal.component';
+import {ContextService} from './service/context/context.service';
+import {TabTreeComponent} from './pages/match-context/tab-tree/tab-tree.component';
+import {NewContextModalComponent} from './pages/match-context/new-context-modal/new-context-modal.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +44,10 @@ import { MatchContextComponent } from './pages/match-context/match-context.compo
     LoginComponent,
     TeamComponent,
     NewTeamComponent,
-    MatchContextComponent
+    MatchContextComponent,
+    RootContextChoiceModalComponent,
+    NewContextModalComponent,
+    TabTreeComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -63,17 +70,22 @@ import { MatchContextComponent } from './pages/match-context/match-context.compo
     MatSidenavModule,
     MatListModule,
     MatDialogModule,
+    MatSelectModule,
+    MatTabsModule,
     FormsModule,
     ReactiveFormsModule
   ],
   entryComponents: [
-    NewTeamComponent
+    NewTeamComponent,
+    RootContextChoiceModalComponent,
+    NewContextModalComponent
   ],
   providers: [
     {provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher},
     AuthorizationGuard,
     AuthService,
-    TeamService
+    TeamService,
+    ContextService
   ],
   bootstrap: [AppComponent]
 })

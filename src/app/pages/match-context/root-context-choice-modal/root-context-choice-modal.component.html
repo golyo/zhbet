@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>Choose new context</h2>
+<mat-dialog-content>
+  <mat-form-field appearance="standard">
+    <mat-select placeholder="Context"[(value)]="selectedId">
+      <mat-option *ngFor="let context of roots" [value]="context.id">
+        {{ context.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="choose()">Choose</button>
+  <button mat-raised-button (click)="close()">Cancel</button>
+</mat-dialog-actions>
