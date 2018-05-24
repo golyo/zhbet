@@ -2,8 +2,8 @@ export class Match {
   id: string;
   root: string;
   parent: string;
-  home: Team;
-  away: Team;
+  home: String;
+  away: String;
   start: Date;
   result: MatchResult;
 }

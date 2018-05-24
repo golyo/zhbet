@@ -57,7 +57,6 @@ export class AuthService {
           } else {
             this._user = new User(fUser.displayName, fUser.email, []);
           }
-          console.log('AUTH state changed', this._user);
           localStorage.setItem(USER_KEY, JSON.stringify(this._user));
           this.userChanged.next(true);
         });

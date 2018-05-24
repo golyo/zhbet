@@ -17,17 +17,4 @@ export class TabTreeComponent {
 
   onSelectTab(event) {
   }
-
-  addNewGroup() {
-    this.dialog.open(NewContextModalComponent, {
-      width: '500px',
-      data: {
-        root: this.parent.rootId,
-        parent: this.parent.id
-      }
-    });
-  }
-
-  addNewMatch() {
-  }
 }

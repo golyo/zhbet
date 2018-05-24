@@ -8,9 +8,9 @@ import {
   MatCardModule, MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
-  MatInputModule, MatListModule, MatSelectModule, MatSidenavModule, MatSortModule,
+  MatInputModule, MatListModule, MatSelectModule, MatSidenavModule, MatSnackBarModule, MatSortModule,
   MatTableModule, MatTabsModule,
-  MatToolbarModule, ShowOnDirtyErrorStateMatcher
+  MatToolbarModule, MatTreeModule, ShowOnDirtyErrorStateMatcher
 } from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {PageNotFoundComponent} from './pages/page-not-found/page-not-found.component';
@@ -35,6 +35,8 @@ import {ContextService} from './service/context/context.service';
 import {TabTreeComponent} from './pages/match-context/tab-tree/tab-tree.component';
 import {NewContextModalComponent} from './pages/match-context/new-context-modal/new-context-modal.component';
 import {NewRootContextModalComponent} from './pages/match-context/new-root-context-modal/new-root-context-modal.component';
+import {ContextTreeComponent} from './pages/match-context/context-tree/context-tree.component';
+import {AdminContextComponent} from './pages/match-context/admin-context/admin-context.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +51,8 @@ import {NewRootContextModalComponent} from './pages/match-context/new-root-conte
     RootContextChoiceModalComponent,
     NewContextModalComponent,
     NewRootContextModalComponent,
+    ContextTreeComponent,
+    AdminContextComponent,
     TabTreeComponent
   ],
   imports: [
@@ -74,6 +78,8 @@ import {NewRootContextModalComponent} from './pages/match-context/new-root-conte
     MatDialogModule,
     MatSelectModule,
     MatTabsModule,
+    MatTreeModule,
+    MatSnackBarModule,
     FormsModule,
     ReactiveFormsModule
   ],

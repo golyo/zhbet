@@ -69,6 +69,10 @@ export class ContextService {
     this.rootContextCollection.doc(this._selectedRoot).collection('matchContext').doc(id).set(dbObject).then();
   }
 
+  removeContext(id): Promise<void> {
+    return this.rootContextCollection.doc(this._selectedRoot).collection('matchContext').doc(id).delete();
+  }
+
   private changeContext() {
     if (this._selectedRoot && (!this.contextSubject.value || this.contextSubject.value.id !== this._selectedRoot)) {
       if (this.contextSubscription) {
@@ -85,7 +89,6 @@ export class ContextService {
             const root = RootContext.fromDto(rootDto);
             this.buildRootContext(root, contexts);
             this.contextSubject.next(root);
-            console.log('CONTEXT READY', root);
           });
         } else {
           // not found

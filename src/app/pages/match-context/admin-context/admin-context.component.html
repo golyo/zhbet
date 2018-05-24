@@ -1,0 +1,26 @@
+<mat-sidenav-container class="context-tree-container">
+  <mat-sidenav mode="side" opened class="context-tree-nav">
+    <app-context-tree (selectNode)="onSelectNode($event)"></app-context-tree>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-card>
+      <mat-card-title>Selected Context</mat-card-title>
+      <mat-card-content><h3 *ngIf="context">{{ context.name }}</h3></mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="openChoiceDialog()">Change Context</button>
+        <button mat-raised-button color="primary" (click)="openNewRootDialog()">New Root</button>
+      </mat-card-actions>
+    </mat-card>
+    <mat-card *ngIf="selectedContext">
+      <mat-card-title>Selected Node</mat-card-title>
+      <mat-card-content><h3>{{ selectedContext.name }}</h3></mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" (click)="addNewGroup()">Add new Group</button>
+        <button mat-raised-button color="primary" (click)="addNewMatch()">Add new Match</button>
+        <button mat-raised-button color="primary" (click)="deleteSelected()">Delete Selected</button>
+      </mat-card-actions>
+    </mat-card>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+

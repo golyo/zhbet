@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {ContextService} from '../../service/context/context.service';
+import {MatchContext} from '../../service/context/context.dto';
+
 
 @Component({
   selector: 'app-matches',
@@ -7,9 +10,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MatchesComponent implements OnInit {
 
-  constructor() { }
+  constructor(contextService: ContextService) { }
 
   ngOnInit() {
   }
 
+  onSelectNode(context: MatchContext) {
+  }
 }

@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {ContextService} from '../../../service/context/context.service';
 import {NewTeamComponent} from '../../team/new-team/new-team.component';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
@@ -9,15 +9,12 @@ import {ZhBetErrorStateMatcher} from '../../../util/error-state-matcher';
   selector: 'app-new-context-modal',
   templateUrl: './new-context-modal.component.html'
 })
-export class NewContextModalComponent implements OnInit {
+export class NewContextModalComponent {
   nameControl = new FormControl('', [Validators.required]);
   matcher = new ZhBetErrorStateMatcher();
 
   constructor(private dialogRef: MatDialogRef<NewTeamComponent>, @Inject(MAT_DIALOG_DATA) public data: any,
               private service: ContextService) {
-  }
-
-  ngOnInit() {
   }
 
   createNew() {

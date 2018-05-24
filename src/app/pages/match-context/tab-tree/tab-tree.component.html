@@ -1,5 +1,3 @@
-<button mat-raised-button color="primary" (click)="addNewGroup()">Add new Group</button>
-<button mat-raised-button color="primary" (click)="addNewMatch()">Add new Match</button>
 <mat-tab-group (selectedTabChange)="onSelectTab($event)">
   <mat-tab *ngFor="let child of parent.children" label="{{ child.name }}">
     <app-tab-tree [parent]="child"></app-tab-tree>

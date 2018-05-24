@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material';
 import {ContextService} from '../../service/context/context.service';
 import {Team} from '../../service/matches/match.dto';
@@ -7,22 +7,28 @@ import {RootContextChoiceModalComponent} from './root-context-choice-modal/root-
 import {MatchContext, RootContext} from '../../service/context/context.dto';
 import {NewContextModalComponent} from './new-context-modal/new-context-modal.component';
 import {NewRootContextModalComponent} from './new-root-context-modal/new-root-context-modal.component';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-match-context',
   templateUrl: './match-context.component.html',
   styleUrls: ['./match-context.component.css']
 })
-export class MatchContextComponent implements OnInit {
+export class MatchContextComponent implements OnInit, OnDestroy {
   context: RootContext;
+  private subscription: Subscription;
 
   constructor(private service: ContextService, private dialog: MatDialog) {
   }
 
   ngOnInit() {
-    this.service.getSelectedContext().subscribe(context => {
+    this.subscription = this.service.getSelectedContext().subscribe(context => {
       this.context = context;
     });
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   openChoiceDialog() {

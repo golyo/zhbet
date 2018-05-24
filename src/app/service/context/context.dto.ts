@@ -48,7 +48,6 @@ export class MatchContext {
   }
 
   add(parentId: string, context: MatchContext) {
-    console.log('Try to add', parentId, context, this);
     const parent = this.find(parentId);
     parent.children.push(context);
     context.parent = parent;

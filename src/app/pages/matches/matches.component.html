@@ -1,3 +1,10 @@
-<p>
-  matches works!
-</p>
+<mat-sidenav-container class="context-tree-container">
+  <mat-sidenav mode="side" opened class="context-tree-nav">
+    <app-context-tree (selectNode)="onSelectNode($event)"></app-context-tree>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    Context
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+

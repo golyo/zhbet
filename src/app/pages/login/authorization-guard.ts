@@ -24,7 +24,6 @@ export class AuthorizationGuard implements CanActivate {
    * @returns {Observable<boolean> | Promise<boolean> | boolean} True, if the component can be loaded.
    */
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    console.log('can activate', route.data);
     return this.isActivable(route, state, route.data.roles, route.data.checkContext);
   }
 
