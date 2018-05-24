@@ -3,10 +3,10 @@ import {MatDialog} from '@angular/material';
 import {ContextService} from '../../service/context/context.service';
 import {Team} from '../../service/matches/match.dto';
 import {NewTeamComponent} from '../team/new-team/new-team.component';
-import {RootContextChoiceModalComponent} from './root-context-choice-modal/root-context-choice-modal.component';
+import {RootContextChoiceModalComponent} from '../admin-context/root-context-choice-modal/root-context-choice-modal.component';
 import {MatchContext, RootContext} from '../../service/context/context.dto';
-import {NewContextModalComponent} from './new-context-modal/new-context-modal.component';
-import {NewRootContextModalComponent} from './new-root-context-modal/new-root-context-modal.component';
+import {NewContextModalComponent} from '../admin-context/new-context-modal/new-context-modal.component';
+import {NewRootContextModalComponent} from '../admin-context/new-root-context-modal/new-root-context-modal.component';
 import {Subscription} from 'rxjs';
 import {SpinnerService} from '../../components/spinner/spinner.service';
 

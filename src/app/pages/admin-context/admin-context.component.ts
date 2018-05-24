@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ContextService} from '../../../service/context/context.service';
-import {MatchContext, RootContext} from '../../../service/context/context.dto';
-import {NewRootContextModalComponent} from '../new-root-context-modal/new-root-context-modal.component';
+import {ContextService} from '../../service/context/context.service';
+import {MatchContext, RootContext} from '../../service/context/context.dto';
+import {NewRootContextModalComponent} from './new-root-context-modal/new-root-context-modal.component';
 import {MatDialog, MatSnackBar} from '@angular/material';
-import {RootContextChoiceModalComponent} from '../root-context-choice-modal/root-context-choice-modal.component';
+import {RootContextChoiceModalComponent} from './root-context-choice-modal/root-context-choice-modal.component';
 import {Subscription} from 'rxjs';
-import {NewContextModalComponent} from '../new-context-modal/new-context-modal.component';
+import {NewContextModalComponent} from './new-context-modal/new-context-modal.component';
 
 @Component({
   selector: 'app-admin-context',
