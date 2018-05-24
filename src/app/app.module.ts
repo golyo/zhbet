@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {ErrorHandler, NgModule} from '@angular/core';
 
 import {AppComponent} from './app.component';
 import {
@@ -25,11 +25,11 @@ import {LoginComponent} from './pages/login/login.component';
 import {AuthService} from './service/auth/auth.service';
 import {appRoutes} from './app.routing';
 import {AuthorizationGuard} from './pages/login/authorization-guard';
-import { TeamComponent } from './pages/team/team.component';
+import {TeamComponent} from './pages/team/team.component';
 import {TeamService} from './service/team/team-service';
-import { NewTeamComponent } from './pages/team/new-team/new-team.component';
+import {NewTeamComponent} from './pages/team/new-team/new-team.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { MatchContextComponent } from './pages/match-context/match-context.component';
+import {MatchContextComponent} from './pages/match-context/match-context.component';
 import {RootContextChoiceModalComponent} from './pages/match-context/root-context-choice-modal/root-context-choice-modal.component';
 import {ContextService} from './service/context/context.service';
 import {TabTreeComponent} from './pages/match-context/tab-tree/tab-tree.component';
@@ -37,11 +37,15 @@ import {NewContextModalComponent} from './pages/match-context/new-context-modal/
 import {NewRootContextModalComponent} from './pages/match-context/new-root-context-modal/new-root-context-modal.component';
 import {ContextTreeComponent} from './pages/match-context/context-tree/context-tree.component';
 import {AdminContextComponent} from './pages/match-context/admin-context/admin-context.component';
+import {SpinnerComponent} from './components/spinner/spinner.component';
+import {GlobalErrorHandler} from './components/global-error-handler';
+import {SpinnerService} from './components/spinner/spinner.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     PageNotFoundComponent,
+    SpinnerComponent,
     HomeComponent,
     MatchesComponent,
     LoginComponent,
@@ -91,7 +95,9 @@ import {AdminContextComponent} from './pages/match-context/admin-context/admin-c
   ],
   providers: [
     {provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher},
+    {provide: ErrorHandler, useClass: GlobalErrorHandler},
     AuthorizationGuard,
+    SpinnerService,
     AuthService,
     TeamService,
     ContextService

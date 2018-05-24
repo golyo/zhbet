@@ -4,6 +4,7 @@ import {Match, MatchResult} from '../matches/match.dto';
 import {AngularFirestore, AngularFirestoreCollection} from 'angularfire2/firestore';
 import {BehaviorSubject, Observable, of, Subscription, throwError} from 'rxjs';
 import {map, tap} from 'rxjs/internal/operators';
+import {SpinnerService} from '../../components/spinner/spinner.service';
 
 const CONTEXT_KEY = 'ZHBET_CONTEXT';
 
@@ -14,18 +15,20 @@ export class ContextService {
   private contextSubscription: Subscription;
   private contextSubject = new BehaviorSubject<RootContext>(undefined);
 
-  constructor(protected store: AngularFirestore) {
+  constructor(protected store: AngularFirestore, private spinner: SpinnerService) {
     this.rootContextCollection = this.store.collection<MatchContextDto>('rootContext');
     this._selectedRoot = localStorage.getItem(CONTEXT_KEY);
     this.changeContext();
   }
 
   getRoots(): Observable<Array<RootContextDto>> {
+    this.spinner.show();
     return this.store.collection<RootContextDto>('rootContext').valueChanges().pipe(tap(rootDtos => {
       rootDtos.forEach(dto => {
         dto.id = dto.year + '_' + dto.type;
         dto.name = dto.year + ' ' + dto.type;
       });
+      this.spinner.hide();
     }));
   }
 
@@ -49,6 +52,7 @@ export class ContextService {
   }
 
   addRootContext(year: number, type: string): void {
+    this.spinner.show();
     const id = year + '_' + type;
     const dbObject = {
       year: year,
@@ -57,6 +61,7 @@ export class ContextService {
     this.rootContextCollection.doc(id).set(dbObject).then(() => {
       this.selectedRoot = id;
       this.contextSubject.next(new RootContext(type, year));
+      this.spinner.hide();
     });
   }
 
@@ -66,15 +71,18 @@ export class ContextService {
       parent: parent,
       name: name,
     };
+    this.spinner.show();
     this.rootContextCollection.doc(this._selectedRoot).collection('matchContext').doc(id).set(dbObject).then();
   }
 
   removeContext(id): Promise<void> {
+    this.spinner.show();
     return this.rootContextCollection.doc(this._selectedRoot).collection('matchContext').doc(id).delete();
   }
 
   private changeContext() {
     if (this._selectedRoot && (!this.contextSubject.value || this.contextSubject.value.id !== this._selectedRoot)) {
+      this.spinner.show();
       if (this.contextSubscription) {
         this.contextSubscription.unsubscribe();
       }
@@ -89,6 +97,7 @@ export class ContextService {
             const root = RootContext.fromDto(rootDto);
             this.buildRootContext(root, contexts);
             this.contextSubject.next(root);
+            this.spinner.hide();
           });
         } else {
           // not found

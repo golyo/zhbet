@@ -8,6 +8,7 @@ import {MatchContext, RootContext} from '../../service/context/context.dto';
 import {NewContextModalComponent} from './new-context-modal/new-context-modal.component';
 import {NewRootContextModalComponent} from './new-root-context-modal/new-root-context-modal.component';
 import {Subscription} from 'rxjs';
+import {SpinnerService} from '../../components/spinner/spinner.service';
 
 @Component({
   selector: 'app-match-context',

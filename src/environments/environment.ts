@@ -4,6 +4,8 @@
 
 export const environment = {
   production: false,
+  useMock: false,
+  backendUrl: '',
   firebase: {
     apiKey: 'AIzaSyBroOyJr3E0t_6zYQqvyjuF3feTzH60dKg',
     authDomain: 'zhbet-2d5dc.firebaseapp.com',
