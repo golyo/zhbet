@@ -5,5 +5,18 @@
 }
 
 .context-tree-container {
-  height: 600px;
+  min-height: 600px;
+}
+
+table {
+  width: 100%;
+}
+
+table tr.mat-row {
+  height: 30px;
+}
+
+table tr.mat-header-row {
+  height: 40px;
+  font-weight: bold;
 }

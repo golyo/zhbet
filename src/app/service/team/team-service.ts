@@ -1,43 +1,30 @@
 import {Injectable} from '@angular/core';
 import {Team} from '../matches/match.dto';
 import {AngularFirestore, AngularFirestoreCollection} from 'angularfire2/firestore';
-import {Observable, Subscription} from 'rxjs';
+import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {ContextService} from '../context/context.service';
+import {FirestoreCollectionService} from '../firestore-collection.service';
 
 @Injectable()
-export class TeamService {
+export class TeamService extends FirestoreCollectionService<Team> {
 
-  constructor(private store: AngularFirestore, private contextService: ContextService) {
+  constructor(private store: AngularFirestore) {
+    super();
   }
 
-  getItems(): Observable<Array<Team>> {
-    return this.getItemCollection().snapshotChanges().pipe(map(actions => {
-      return actions.map(a => {
-        const data = a.payload.doc.data() as Team;
-        data.id = a.payload.doc.id;
-        return data;
-      });
-    }));
+  protected getItemCollection(params: string[]): AngularFirestoreCollection<Team> {
+    return this.store.collection<Team>('rootContext/' + params[0] + '/teams');
   }
 
-  updateItem(item: Team): Promise<any> {
-    const dbObject = {
+  protected transformToDbObject(item: Team): any {
+    return {
       name: item.name,
       point: item.point || 0
-    } as Team;
-    if (item.id) {
-      return this.getItemCollection().doc(item.id).update(dbObject);
-    } else {
-      return this.getItemCollection().add(dbObject);
-    }
+    };
   }
 
-  deleteItem(item: Team): Promise<void> {
-    return this.getItemCollection().doc(item.id).delete();
-  }
-
-  private getItemCollection(): AngularFirestoreCollection<Team> {
-    return this.store.collection<Team>('rootContext/' + this.contextService.selectedRoot + '/teams');
+  protected transformToItem(dbObject: any, id: string): Team {
+    return new Team(id, dbObject.name, dbObject.point);
   }
 }

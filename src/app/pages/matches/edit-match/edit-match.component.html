@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>Create new Match</h2>
+<mat-dialog-content>
+  <div>
+    <mat-form-field appearance="standard">
+      <mat-label>Home</mat-label>
+      <input matInput placeholder="Home" [formControl]="homeControl" [errorStateMatcher]="matcher">
+      <mat-error *ngIf="homeControl.hasError('required')">
+        Please enter the home team
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="standard">
+      <mat-label>Away</mat-label>
+      <input matInput placeholder="Home" [formControl]="awayControl" [errorStateMatcher]="matcher">
+      <mat-error *ngIf="awayControl.hasError('required')">
+        Please enter the away team
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="standard">
+      <mat-label>Start Date</mat-label>
+      <input matInput placeholder="Start date" [matDatepicker]="picker" [formControl]="dateControl" [errorStateMatcher]="matcher">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker [startAt]="minDate"></mat-datepicker>
+      <mat-error *ngIf="dateControl.hasError('required')">
+        Please enter the start date
+      </mat-error>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="standard">
+      <mat-label>Start time</mat-label>
+      <input matInput placeholder="Start time" mask="09:09" [formControl]="timeControl" [errorStateMatcher]="matcher">
+      <mat-hint>Example: 18:45</mat-hint>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="standard">
+      <mat-label>Result</mat-label>
+      <input matInput placeholder="Result" mask="99-99">
+      <mat-hint>Example: 3-1</mat-hint>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="createNew()">Create</button>
+  <button mat-raised-button (click)="close()">Cancel</button>
+</mat-dialog-actions>

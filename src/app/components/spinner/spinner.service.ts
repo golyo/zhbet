@@ -2,6 +2,8 @@ import {BehaviorSubject, Observable} from 'rxjs';
 
 export class SpinnerService {
 
+  constructor() {
+  }
   private showHideSubscription = new BehaviorSubject<boolean>(false);
 
   show() {

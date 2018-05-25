@@ -30,8 +30,10 @@ export class MatchContextDto {
 export class MatchContext {
   id: string;
   name: string;
+  finished: boolean;
   parent: MatchContext;
   children: Array<MatchContext>;
+  matches: Array<Match>;
 
   constructor(id?: string, name?: string) {
     this.id = id;

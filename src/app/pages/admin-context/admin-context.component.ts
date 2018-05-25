@@ -6,6 +6,9 @@ import {MatDialog, MatSnackBar} from '@angular/material';
 import {RootContextChoiceModalComponent} from './root-context-choice-modal/root-context-choice-modal.component';
 import {Subscription} from 'rxjs';
 import {NewContextModalComponent} from './new-context-modal/new-context-modal.component';
+import {MatchService} from '../../service/matches/match.service';
+import {SpinnerService} from '../../components/spinner/spinner.service';
+import {EditMatchComponent} from '../matches/edit-match/edit-match.component';
 
 @Component({
   selector: 'app-admin-context',
@@ -16,13 +19,15 @@ export class AdminContextComponent implements OnInit, OnDestroy {
   context: RootContext;
   selectedContext: MatchContext;
 
-  private subscription: Subscription;
+  private contextSubscription: Subscription;
 
-  constructor(private service: ContextService, private dialog: MatDialog, private snack: MatSnackBar) {
+
+  constructor(private contextService: ContextService, private matchService: MatchService,
+              private dialog: MatDialog, private snack: MatSnackBar, private spinner: SpinnerService) {
   }
 
   ngOnInit() {
-    this.subscription = this.service.getSelectedContext().subscribe(context => {
+    this.contextSubscription = this.contextService.getSelectedContext().subscribe(context => {
       if (!this.context || this.context.id !== context.id) {
         this.selectedContext = null;
       }
@@ -31,7 +36,7 @@ export class AdminContextComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.contextSubscription.unsubscribe();
   }
 
   openChoiceDialog() {
@@ -52,7 +57,7 @@ export class AdminContextComponent implements OnInit, OnDestroy {
         duration: 3000
       });
     } else {
-      this.service.removeContext(this.selectedContext.id).then(() => {
+      this.contextService.removeContext(this.selectedContext.id).then(() => {
         this.selectedContext = undefined;
       });
     }
@@ -69,9 +74,12 @@ export class AdminContextComponent implements OnInit, OnDestroy {
   }
 
   addNewMatch() {
+    this.dialog.open(EditMatchComponent, {
+      width: '500px',
+    });
   }
 
   onSelectNode(context: MatchContext) {
     this.selectedContext = context;
-  }
+ }
 }

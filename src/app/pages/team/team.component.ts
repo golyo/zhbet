@@ -4,6 +4,7 @@ import {Team} from '../../service/matches/match.dto';
 import {NewTeamComponent} from './new-team/new-team.component';
 import {MatDialog, MatSort, MatTableDataSource} from '@angular/material';
 import {Subscription} from 'rxjs';
+import {ContextService} from '../../service/context/context.service';
 
 @Component({
   selector: 'app-team',
@@ -19,11 +20,11 @@ export class TeamComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private service: TeamService, private dialog: MatDialog) {
+  constructor(private teamService: TeamService, private contextService: ContextService, private dialog: MatDialog) {
   }
 
   ngOnInit() {
-    this.subscription = this.service.getItems().subscribe(teams => {
+    this.subscription = this.teamService.getItems(this.contextService.selectedRoot).subscribe(teams => {
       this.teams = teams;
       this.dataSource = new MatTableDataSource<Team>(teams);
       this.dataSource.sort = this.sort;
@@ -32,10 +33,11 @@ export class TeamComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    // this.teamService.resetCollectionSubscription();
   }
 
   delete(team: Team) {
-    this.service.deleteItem(team);
+    this.teamService.delete(team.id).then();
   }
 
   openDialog(team?: Team) {

@@ -26,7 +26,7 @@ export const appRoutes: Routes = [
   }, {
     path: 'context',
     component: MatchContextComponent,
-    canActivate: [AuthorizationGuard],
+    canActivate: [AuthorizationGuard]
   }, {
     path: 'admin',
     component: AdminContextComponent,
@@ -39,6 +39,9 @@ export const appRoutes: Routes = [
     path: 'matches',
     component: MatchesComponent,
     canActivate: [AuthorizationGuard],
+    data: {
+      checkContext: true
+    }
   }, {
     path: '**',
     component: PageNotFoundComponent

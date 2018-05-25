@@ -28,9 +28,11 @@ export class NewTeamComponent implements OnInit {
   save() {
     if (this.nameControl.valid) {
       this.team.name = this.nameControl.value;
-      this.service.updateItem(this.team).then(() => {
-        this.dialogRef.close(this.team);
-      });
+      if (this.team.id) {
+        this.service.update(this.team.id, this.team).then(() => this.dialogRef.close());
+      } else {
+        this.service.add(this.team).then(() => this.dialogRef.close());
+      }
     }
   }
 

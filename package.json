@@ -25,6 +25,7 @@
     "angularfire2": "^5.0.0-rc.8.0",
     "core-js": "^2.5.4",
     "firebase": "^5.0.2",
+    "ngx-mask": "^2.7.3",
     "rxjs": "^6.0.0",
     "zone.js": "^0.8.26"
   },

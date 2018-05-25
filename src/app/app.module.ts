@@ -5,10 +5,10 @@ import {AppComponent} from './app.component';
 import {
   ErrorStateMatcher,
   MatButtonModule,
-  MatCardModule, MatDialogModule,
+  MatCardModule, MatDatepickerModule, MatDialogModule,
   MatFormFieldModule,
   MatIconModule,
-  MatInputModule, MatListModule, MatSelectModule, MatSidenavModule, MatSnackBarModule, MatSortModule,
+  MatInputModule, MatListModule, MatNativeDateModule, MatSelectModule, MatSidenavModule, MatSnackBarModule, MatSortModule,
   MatTableModule, MatTabsModule,
   MatToolbarModule, MatTreeModule, ShowOnDirtyErrorStateMatcher
 } from '@angular/material';
@@ -40,6 +40,10 @@ import {AdminContextComponent} from './pages/admin-context/admin-context.compone
 import {SpinnerComponent} from './components/spinner/spinner.component';
 import {GlobalErrorHandler} from './components/global-error-handler';
 import {SpinnerService} from './components/spinner/spinner.service';
+import {MatchService} from './service/matches/match.service';
+import {MatchTableComponent} from './pages/matches/match-table/match-table.component';
+import {EditMatchComponent} from './pages/matches/edit-match/edit-match.component';
+import {NgxMaskModule} from 'ngx-mask';
 
 @NgModule({
   declarations: [
@@ -57,7 +61,9 @@ import {SpinnerService} from './components/spinner/spinner.service';
     NewRootContextModalComponent,
     ContextTreeComponent,
     AdminContextComponent,
-    TabTreeComponent
+    TabTreeComponent,
+    MatchTableComponent,
+    EditMatchComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -85,13 +91,17 @@ import {SpinnerService} from './components/spinner/spinner.service';
     MatTreeModule,
     MatSnackBarModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    NgxMaskModule.forRoot({})
   ],
   entryComponents: [
     NewTeamComponent,
     RootContextChoiceModalComponent,
     NewContextModalComponent,
-    NewRootContextModalComponent
+    NewRootContextModalComponent,
+    EditMatchComponent
   ],
   providers: [
     {provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher},
@@ -100,7 +110,8 @@ import {SpinnerService} from './components/spinner/spinner.service';
     SpinnerService,
     AuthService,
     TeamService,
-    ContextService
+    ContextService,
+    MatchService
   ],
   bootstrap: [AppComponent]
 })

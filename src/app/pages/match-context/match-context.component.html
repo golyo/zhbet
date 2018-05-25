@@ -1,7 +1,7 @@
 <div>
   <h1>
     <span *ngIf="context" class="main-context">{{ context.name }}</span>
-    <button mat-raised-button color="primary" (click)="openChoiceDialog()">Change Context</button>
+    <button mat-raised-button color="primary" (click)="openChoiceDialog()">{{ context ? 'Change' : 'Select'}} Context</button>
   </h1>
   <app-tab-tree [parent]="context" *ngIf="context"></app-tab-tree>
 </div>
