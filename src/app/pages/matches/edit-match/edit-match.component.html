@@ -3,7 +3,11 @@
   <div>
     <mat-form-field appearance="standard">
       <mat-label>Home</mat-label>
-      <input matInput placeholder="Home" [formControl]="homeControl" [errorStateMatcher]="matcher">
+      <mat-select placeholder="Home" [formControl]="homeControl" [errorStateMatcher]="matcher">
+        <mat-option *ngFor="let team of teams" [value]="team.name">
+          {{ team.name }}
+        </mat-option>
+      </mat-select>
       <mat-error *ngIf="homeControl.hasError('required')">
         Please enter the home team
       </mat-error>
@@ -12,7 +16,11 @@
   <div>
     <mat-form-field appearance="standard">
       <mat-label>Away</mat-label>
-      <input matInput placeholder="Home" [formControl]="awayControl" [errorStateMatcher]="matcher">
+      <mat-select placeholder="Away" [formControl]="awayControl" [errorStateMatcher]="matcher">
+        <mat-option *ngFor="let team of teams" [value]="team.name">
+          {{ team.name }}
+        </mat-option>
+      </mat-select>
       <mat-error *ngIf="awayControl.hasError('required')">
         Please enter the away team
       </mat-error>

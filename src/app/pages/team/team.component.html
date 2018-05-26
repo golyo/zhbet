@@ -1,6 +1,6 @@
 <mat-card>
-  <mat-card-header>
-    <mat-card-title>Teams</mat-card-title>
+  <mat-card-header *ngIf="selectedContext">
+    <mat-card-title>Teams in {{ selectedContext.name}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
     <table mat-table #table [dataSource]="dataSource" matSort matSortActive="name" matSortDirection="asc" >

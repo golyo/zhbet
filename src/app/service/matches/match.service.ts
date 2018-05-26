@@ -32,7 +32,10 @@ export class MatchService extends FirestoreCollectionService<Match> {
   }
 
   protected transformToItem(dbObject: any, id: string): Match {
-    return new Match(id, dbObject.home, dbObject.away, new Date(dbObject.start.seconds * 1000),
-      new MatchResult(dbObject.result.home, dbObject.result.away));
+    const match = new Match(id, dbObject.home, dbObject.away, new Date(dbObject.start.seconds * 1000));
+    if (dbObject.result) {
+      match.result = new MatchResult(dbObject.result.home, dbObject.result.away);
+    }
+    return match;
   }
 }

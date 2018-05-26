@@ -5,6 +5,7 @@ import {NewTeamComponent} from './new-team/new-team.component';
 import {MatDialog, MatSort, MatTableDataSource} from '@angular/material';
 import {Subscription} from 'rxjs';
 import {ContextService} from '../../service/context/context.service';
+import {RootContext} from '../../service/context/context.dto';
 
 @Component({
   selector: 'app-team',
@@ -12,7 +13,7 @@ import {ContextService} from '../../service/context/context.service';
   styleUrls: ['./team.component.css']
 })
 export class TeamComponent implements OnInit, OnDestroy {
-
+  selectedContext: RootContext;
   teams: Array<Team>
   dataSource: MatTableDataSource<Team>;
   displayedColumns = ['name', 'point', 'ops'];
@@ -20,10 +21,14 @@ export class TeamComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatSort) sort: MatSort;
 
+  private contextSubscription: Subscription;
   constructor(private teamService: TeamService, private contextService: ContextService, private dialog: MatDialog) {
   }
 
   ngOnInit() {
+    this.contextSubscription = this.contextService.getSelectedContext().subscribe(context => {
+      this.selectedContext = context;
+    });
     this.subscription = this.teamService.getItems(this.contextService.selectedRoot).subscribe(teams => {
       this.teams = teams;
       this.dataSource = new MatTableDataSource<Team>(teams);
@@ -33,7 +38,7 @@ export class TeamComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
-    // this.teamService.resetCollectionSubscription();
+    this.contextSubscription.unsubscribe();
   }
 
   delete(team: Team) {
