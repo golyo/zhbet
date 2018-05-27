@@ -16,6 +16,10 @@ export class MatchService extends FirestoreCollectionService<Match> {
       .doc(params[1]).collection<Match>('matches');
   }
 
+  protected transformCollection(items: Array<Match>): Array<Match> {
+    return items.sort((a, b) => a.start.getTime() - b.start.getTime());
+  }
+
   protected transformToDbObject(item: Match): any {
     const object = {
       home: item.home,

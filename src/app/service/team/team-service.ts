@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Team} from '../matches/match.dto';
 import {AngularFirestore, AngularFirestoreCollection} from 'angularfire2/firestore';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {map, tap} from 'rxjs/operators';
 import {ContextService} from '../context/context.service';
 import {FirestoreCollectionService} from '../firestore-collection.service';
 
@@ -15,6 +15,10 @@ export class TeamService extends FirestoreCollectionService<Team> {
 
   protected getItemCollection(params: string[]): AngularFirestoreCollection<Team> {
     return this.store.collection<Team>('rootContext/' + params[0] + '/teams');
+  }
+
+  protected transformCollection(items: Array<Team>): Array<Team> {
+    return items.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   protected transformToDbObject(item: Team): any {

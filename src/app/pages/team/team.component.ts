@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {TeamService} from '../../service/team/team-service';
 import {Team} from '../../service/matches/match.dto';
 import {NewTeamComponent} from './new-team/new-team.component';

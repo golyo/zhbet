@@ -14,8 +14,8 @@ export abstract class FirestoreCollectionService<T> {
     if (this.isChanged(params)) {
       this.prevParams = params;
       this.resetCollectionSubscription();
-      this.subscription = this.transformCollection(this.getItemCollection(params)).subscribe(items => {
-        this.collectionSubject.next(items);
+      this.subscription = this.transformFirestoreCollection(this.getItemCollection(params)).subscribe(items => {
+        this.collectionSubject.next(this.transformCollection(items));
       });
     }
     return this.collectionSubject.asObservable();
@@ -46,11 +46,15 @@ export abstract class FirestoreCollectionService<T> {
     return item;
   }
 
+  protected transformCollection(items: Array<T>): Array<T> {
+    return items;
+  }
+
   protected transformToItem(dbObject: any, id: string): T {
     return dbObject as T;
   }
 
-  protected transformCollection(collection: AngularFirestoreCollection<T>): Observable<Array<T>> {
+  protected transformFirestoreCollection(collection: AngularFirestoreCollection<T>): Observable<Array<T>> {
     return collection.snapshotChanges().pipe(map(actions => {
       return actions.map(a => {
         return this.transformToItem(a.payload.doc.data(), a.payload.doc.id);
