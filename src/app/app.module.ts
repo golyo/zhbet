@@ -44,6 +44,7 @@ import {MatchService} from './service/matches/match.service';
 import {MatchTableComponent} from './pages/matches/match-table/match-table.component';
 import {EditMatchComponent} from './pages/matches/edit-match/edit-match.component';
 import {NgxMaskModule} from 'ngx-mask';
+import {NamePickerComponent} from './pages/login/name-picker/name-picker.component';
 
 @NgModule({
   declarations: [
@@ -63,7 +64,8 @@ import {NgxMaskModule} from 'ngx-mask';
     AdminContextComponent,
     TabTreeComponent,
     MatchTableComponent,
-    EditMatchComponent
+    EditMatchComponent,
+    NamePickerComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -101,7 +103,8 @@ import {NgxMaskModule} from 'ngx-mask';
     RootContextChoiceModalComponent,
     NewContextModalComponent,
     NewRootContextModalComponent,
-    EditMatchComponent
+    EditMatchComponent,
+    NamePickerComponent
   ],
   providers: [
     {provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher},

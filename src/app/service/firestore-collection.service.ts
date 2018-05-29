@@ -22,15 +22,15 @@ export abstract class FirestoreCollectionService<T> {
   }
 
   update(id: string, item: T): Promise<void> {
-    return this.getItemCollection(this.prevParams).doc(id).update(this.transformToDbObject(item));
+    return this.getFinalCollection().doc(id).update(this.transformToDbObject(item));
   }
 
   add(item: T): Promise<DocumentReference> {
-    return this.getItemCollection(this.prevParams).add(this.transformToDbObject(item) as T);
+    return this.getFinalCollection().add(this.transformToDbObject(item) as T);
   }
 
   delete(id: string): Promise<void> {
-    return this.getItemCollection(this.prevParams).doc(id).delete();
+    return this.getFinalCollection().doc(id).delete();
   }
 
   resetCollectionSubscription() {
@@ -38,6 +38,10 @@ export abstract class FirestoreCollectionService<T> {
       this.subscription.unsubscribe();
       delete this.subscription;
     }
+  }
+
+  protected getFinalCollection(): AngularFirestoreCollection<T> {
+    return this.getItemCollection(this.prevParams);
   }
 
   protected abstract getItemCollection(params: string[]): AngularFirestoreCollection<T>;

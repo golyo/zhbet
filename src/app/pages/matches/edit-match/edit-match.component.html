@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Create new Match</h2>
+<h2 mat-dialog-title>Edit Match</h2>
 <mat-dialog-content>
   <div>
     <mat-form-field appearance="standard">
@@ -49,10 +49,13 @@
       <mat-label>Result</mat-label>
       <input matInput placeholder="Result" mask="09-09" [formControl]="resultControl" [dropSpecialCharacters]="false">
       <mat-hint>Example: 3-1</mat-hint>
+      <mat-error *ngIf="resultControl.hasError('invalidResult')">
+        Invalid result
+      </mat-error>
     </mat-form-field>
   </div>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-raised-button color="primary" (click)="createNew()">Create</button>
+  <button mat-raised-button color="primary" (click)="saveMatch()">Save</button>
   <button mat-raised-button (click)="close()">Cancel</button>
 </mat-dialog-actions>

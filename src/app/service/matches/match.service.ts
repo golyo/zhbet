@@ -11,6 +11,11 @@ export class MatchService extends FirestoreCollectionService<Match> {
     super();
   }
 
+  updateResult(match: Match): Promise<void> {
+    // TODO UPDATE BETS
+    return this.getFinalCollection().doc(match.id).update({result: this.transformResultToObject(match.result)});
+  }
+
   protected getItemCollection(params: string[]): AngularFirestoreCollection<Match> {
     return this.store.collection('rootContext').doc(params[0]).collection<Match>('matchContext')
       .doc(params[1]).collection<Match>('matches');
@@ -27,10 +32,7 @@ export class MatchService extends FirestoreCollectionService<Match> {
       start: item.start
     } as any;
     if (item.result) {
-      object.result = {
-        home: item.result.home,
-        away: item.result.away
-      };
+      object.result = this.transformResultToObject(item.result);
     }
     return object;
   }
@@ -41,5 +43,12 @@ export class MatchService extends FirestoreCollectionService<Match> {
       match.result = new MatchResult(dbObject.result.home, dbObject.result.away);
     }
     return match;
+  }
+
+  private transformResultToObject(result: MatchResult): Object {
+    return result ? {
+      home: result.home,
+      away: result.away
+    } : null;
   }
 }

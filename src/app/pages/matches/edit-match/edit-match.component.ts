@@ -1,12 +1,13 @@
 import {ZhBetErrorStateMatcher} from '../../../util/error-state-matcher';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {FormControl, Validators} from '@angular/forms';
+import {AbstractControl, FormControl, PatternValidator, ValidatorFn, Validators} from '@angular/forms';
 import {ContextService} from '../../../service/context/context.service';
 import {MatchService} from '../../../service/matches/match.service';
 import {Match, MatchResult, Team} from '../../../service/matches/match.dto';
 import {TeamService} from '../../../service/team/team-service';
 import {Subscription} from 'rxjs';
+import {SpinnerService} from '../../../components/spinner/spinner.service';
 
 const TIME_DELIM = ':';
 const RESULT_DELIM = '-';
@@ -16,17 +17,18 @@ const RESULT_DELIM = '-';
   templateUrl: './edit-match.component.html'
 })
 export class EditMatchComponent implements OnInit, OnDestroy {
+  id: string;
   homeControl = new FormControl('', [Validators.required]);
   awayControl = new FormControl('', [Validators.required]);
   dateControl = new FormControl(new Date(), [Validators.required]);
   timeControl = new FormControl('', [Validators.required]);
-  resultControl = new FormControl('');
+  resultControl = new FormControl('', [resultValidator()]);
   matcher = new ZhBetErrorStateMatcher();
   minDate = new Date();
   teams: Array<Team>;
   private teamSubscription: Subscription;
-  private id: string;
-  constructor(private dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any,
+
+  constructor(private dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any, private spinner: SpinnerService,
               private contextService: ContextService, private teamService: TeamService, private matchService: MatchService) {
     const match = (data ? data.match : undefined) as Match;
     if (match) {
@@ -37,6 +39,14 @@ export class EditMatchComponent implements OnInit, OnDestroy {
       this.timeControl.setValue(match.start.getHours() + TIME_DELIM + match.start.getMinutes());
       if (match.result) {
         this.resultControl.setValue(match.result.home + RESULT_DELIM + match.result.away);
+      }
+      if (data.resultMode) {
+        this.homeControl.disable();
+        this.awayControl.disable();
+        this.dateControl.disable();
+        this.timeControl.disable();
+      } else {
+        this.resultControl.disable();
       }
     }
   }
@@ -51,25 +61,52 @@ export class EditMatchComponent implements OnInit, OnDestroy {
     this.teamSubscription.unsubscribe();
   }
 
-  createNew() {
-    if (this.homeControl.valid && this.awayControl.valid && this.dateControl.valid && this.timeControl.valid && this.resultControl.valid) {
-      const date = this.dateControl.value as Date;
-      const times = this.timeControl.value.split(TIME_DELIM);
-      date.setHours(times[0], times[1]);
+  saveMatch() {
+    const match = this.getMatch();
+    if (!this.resultControl.disabled) {
       const results = this.resultControl.value.split(RESULT_DELIM);
-      const result = results.length === 2 ? new MatchResult(results[0], results[1]) : undefined;
-      const match = new Match(this.id, this.homeControl.value, this.awayControl.value, date, result);
-      if (this.id) {
-        this.matchService.update(this.id, match).then();
-      } else {
-        this.matchService.add(match).then();
+      if (this.resultControl.valid) {
+        match.result = results.length === 2 ? new MatchResult(results[0], results[1]) : undefined;
+        this.runPromise(this.matchService.updateResult(match));
       }
-      this.dialogRef.close();
+      console.log('XXX', match.result);
+    } else if (this.homeControl.valid && this.awayControl.valid && this.dateControl.valid && this.timeControl.valid) {
+      if (this.id) {
+        this.runPromise(this.matchService.update(this.id, match));
+      } else {
+        this.runPromise(this.matchService.add(match));
+      }
     }
+  }
+
+  private runPromise(promise: Promise<any>) {
+    this.spinner.show();
+    promise.then(() => {
+      this.spinner.hide();
+      this.dialogRef.close();
+    });
   }
 
   close() {
     this.dialogRef.close();
   }
 
+  private getMatch(): Match {
+    const date = this.dateControl.value as Date;
+    const times = this.timeControl.value.split(TIME_DELIM);
+    date.setHours(times[0], times[1]);
+    return new Match(this.id, this.homeControl.value, this.awayControl.value, date);
+  }
+}
+
+function resultValidator(): ValidatorFn {
+  return (control: AbstractControl): {[key: string]: any} => {
+    if (control.value) {
+      const results = control.value.split(RESULT_DELIM);
+      if (results.length === 1) {
+        return {'invalidResult': {value: control.value}};
+      }
+    }
+    return null;
+  };
 }

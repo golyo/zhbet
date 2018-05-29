@@ -9,7 +9,7 @@
       <button mat-button routerLink="matches">Matches</button>
     </div>
     <span *ngIf="user">
-      <span>Welcome {{ user.name }}</span>
+      <button mat-button (click)="changeNameDialog()">Welcome {{ user.name }}</button>
       <button mat-button (click)="logout()">Logout</button>
     </span>
   </mat-toolbar-row>

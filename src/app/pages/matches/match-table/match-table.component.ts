@@ -7,6 +7,7 @@ import {MatDialog, MatTableDataSource} from '@angular/material';
 import {Match} from '../../../service/matches/match.dto';
 import {EditMatchComponent} from '../edit-match/edit-match.component';
 
+const COLUMNS = ['home', 'away', 'date', 'result'];
 @Component({
   selector: 'app-match-table',
   templateUrl: './match-table.component.html'
@@ -15,7 +16,10 @@ export class MatchTableComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   matchContext: MatchContext;
 
-  displayedColumns = ['home', 'away', 'date', 'result', 'ops'];
+  @Input()
+  adminView: boolean;
+
+  displayedColumns = [];
   dataSource: MatTableDataSource<Match>;
 
   private matchSubscription: Subscription;
@@ -25,9 +29,12 @@ export class MatchTableComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
+    console.log('INIT');
   }
 
   ngOnChanges() {
+    this.displayedColumns = COLUMNS.concat(this.adminView ? 'adminOps' : 'betOps');
+    console.log('CHANGE', this.adminView, this.matchContext);
     if (this.matchContext) {
       if (!this.matchContext.finished || !this.matchContext.matches) {
         this.reloadMatches();
@@ -55,10 +62,13 @@ export class MatchTableComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
-  editMatch(match: Match) {
+  editMatch(match: Match, resultMode: boolean) {
     this.dialog.open(EditMatchComponent, {
       width: '500px',
-      data: { match: match }
+      data: {
+        match: match,
+        resultMode: resultMode
+      }
     });
   }
 

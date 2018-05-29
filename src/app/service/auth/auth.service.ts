@@ -5,6 +5,7 @@ import {AngularFireAuth} from 'angularfire2/auth';
 import {AngularFirestore} from 'angularfire2/firestore';
 import * as firebase from 'firebase';
 import {map} from 'rxjs/internal/operators';
+import DocumentReference = firebase.firestore.DocumentReference;
 
 const USER_KEY = 'zhbet_user';
 export const ADMIN_ROLE = 'ADMIN';
@@ -42,6 +43,30 @@ export class AuthService {
     return this.userChanged.asObservable();
   }
 
+  addUserWithName(name: string): Promise<void> {
+    if (this._user.id) {
+      return new Promise((resolve, reject) => {
+        this.store.collection('users').doc(this._user.id).update({ name: name }).then(() => {
+          this._user.name = name;
+          resolve();
+        }).catch((e) => reject(e));
+      });
+    } else {
+      const dbObject = {
+        name: name,
+        email: this._user.email,
+        roles: this._user.roles
+      };
+      return new Promise((resolve, reject) => {
+        this.store.collection('users').add(dbObject).then(userDoc => {
+          this._user.name = name;
+          this._user.id = userDoc.id;
+          resolve();
+        }).catch((e) => reject(e));
+      });
+    }
+  }
+
   private onAuthStateChanged(fUser: firebase.User) {
     if (!fUser) {
       // User logged out
@@ -50,12 +75,15 @@ export class AuthService {
     } else if (!this._user || this._user.email !== fUser.email) {
       // USer changed
       this.store.collection('users', ref => ref.where('email', '==', fUser.email))
-        .snapshotChanges().pipe(map(users => users.map(user => user.payload.doc.data() as User)))
+        .snapshotChanges().pipe(map(users => users.map(userDoc => {
+          const dbObject = userDoc.payload.doc.data();
+          return new User(userDoc.payload.doc.id, dbObject.name, dbObject.email, dbObject.roles);
+      })))
         .subscribe((users) => {
           if (users.length > 0) {
             this._user = users[0];
           } else {
-            this._user = new User(fUser.displayName, fUser.email, []);
+            this._user = new User(null, fUser.displayName, fUser.email, []);
           }
           localStorage.setItem(USER_KEY, JSON.stringify(this._user));
           this.userChanged.next(true);
