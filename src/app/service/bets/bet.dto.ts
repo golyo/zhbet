@@ -16,7 +16,7 @@ export class MatchResultBet extends Match {
   }
 }
 
-export class MatchContextBet {
+export class BetContext {
   user: string;
   contextId: string;
   results: Array<MatchResultBet>;
