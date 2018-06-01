@@ -12,17 +12,20 @@ export abstract class FirestoreCollectionService<T> {
 
   getItems(...params: string[]): Observable<Array<T>> {
     if (this.isChanged(params)) {
+      console.log('TRY TO LOAD ITEMS', params);
       this.prevParams = params;
       this.resetCollectionSubscription();
       this.subscription = this.transformFirestoreCollection(this.getItemCollection(params)).subscribe(items => {
+        console.log('ITEMS LOADED', items);
         this.collectionSubject.next(this.transformCollection(items));
       });
     }
+    console.log('FIRST SUBSCRIPTION', this.collectionSubject.getValue());
     return this.collectionSubject.asObservable();
   }
 
   update(id: string, item: T): Promise<void> {
-    return this.getFinalCollection().doc(id).update(this.transformToDbObject(item));
+    return this.getFinalCollection().doc(id).update(this.transformToUpdateDbObject(item));
   }
 
   add(item: T): Promise<DocumentReference> {
@@ -38,6 +41,10 @@ export abstract class FirestoreCollectionService<T> {
       this.subscription.unsubscribe();
       delete this.subscription;
     }
+  }
+
+  protected transformToUpdateDbObject(item: T) {
+    return this.transformToDbObject(item);
   }
 
   protected getFinalCollection(): AngularFirestoreCollection<T> {

@@ -45,6 +45,10 @@ import {MatchTableComponent} from './pages/matches/match-table/match-table.compo
 import {EditMatchComponent} from './pages/matches/edit-match/edit-match.component';
 import {NgxMaskModule} from 'ngx-mask';
 import {NamePickerComponent} from './pages/login/name-picker/name-picker.component';
+import { BetContextComponent } from './pages/bet-context/bet-context.component';
+import { EditBetComponent } from './pages/bet-context/edit-bet/edit-bet.component';
+import {BetService} from './service/bets/bet.service';
+import { BetTableComponent } from './pages/bet-context/bet-table/bet-table.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +69,10 @@ import {NamePickerComponent} from './pages/login/name-picker/name-picker.compone
     TabTreeComponent,
     MatchTableComponent,
     EditMatchComponent,
-    NamePickerComponent
+    NamePickerComponent,
+    BetContextComponent,
+    EditBetComponent,
+    BetTableComponent
   ],
   imports: [
     RouterModule.forRoot(
@@ -104,6 +111,7 @@ import {NamePickerComponent} from './pages/login/name-picker/name-picker.compone
     NewContextModalComponent,
     NewRootContextModalComponent,
     EditMatchComponent,
+    EditBetComponent,
     NamePickerComponent
   ],
   providers: [
@@ -114,7 +122,8 @@ import {NamePickerComponent} from './pages/login/name-picker/name-picker.compone
     AuthService,
     TeamService,
     ContextService,
-    MatchService
+    MatchService,
+    BetService
   ],
   bootstrap: [AppComponent]
 })

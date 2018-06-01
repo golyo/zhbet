@@ -76,10 +76,11 @@ export class AuthService {
       // USer changed
       this.store.collection('users', ref => ref.where('email', '==', fUser.email))
         .snapshotChanges().pipe(map(users => users.map(userDoc => {
-          const dbObject = userDoc.payload.doc.data();
+          const dbObject = userDoc.payload.doc.data() as any;
           return new User(userDoc.payload.doc.id, dbObject.name, dbObject.email, dbObject.roles);
       })))
         .subscribe((users) => {
+          console.log('USERS LOADED', users);
           if (users.length > 0) {
             this._user = users[0];
           } else {

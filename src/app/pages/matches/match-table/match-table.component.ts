@@ -6,8 +6,8 @@ import {MatchService} from '../../../service/matches/match.service';
 import {MatDialog, MatTableDataSource} from '@angular/material';
 import {Match} from '../../../service/matches/match.dto';
 import {EditMatchComponent} from '../edit-match/edit-match.component';
+import {EditBetComponent} from '../../bet-context/edit-bet/edit-bet.component';
 
-const COLUMNS = ['home', 'away', 'date', 'result'];
 @Component({
   selector: 'app-match-table',
   templateUrl: './match-table.component.html'
@@ -16,25 +16,20 @@ export class MatchTableComponent implements OnInit, OnChanges, OnDestroy {
   @Input()
   matchContext: MatchContext;
 
-  @Input()
-  adminView: boolean;
-
   displayedColumns = [];
   dataSource: MatTableDataSource<Match>;
 
   private matchSubscription: Subscription;
 
-  constructor(private matchService: MatchService, private dialog: MatDialog, private spinner: SpinnerService) {
+  constructor(protected matchService: MatchService, protected dialog: MatDialog, protected spinner: SpinnerService) {
     this.dataSource = new MatTableDataSource<Match>([]);
   }
 
   ngOnInit() {
-    console.log('INIT');
+    this.displayedColumns = ['home', 'away', 'date', 'result', 'adminOps'];
   }
 
   ngOnChanges() {
-    this.displayedColumns = COLUMNS.concat(this.adminView ? 'adminOps' : 'betOps');
-    console.log('CHANGE', this.adminView, this.matchContext);
     if (this.matchContext) {
       if (!this.matchContext.finished || !this.matchContext.matches) {
         this.reloadMatches();
@@ -52,13 +47,14 @@ export class MatchTableComponent implements OnInit, OnChanges, OnDestroy {
     this.spinner.show();
     this.unsubscribe();
     this.dataSource.data = [];
+    console.log('RELOAD MATCHES');
     this.matchSubscription = this.matchService.getItems(this.matchContext.rootId, this.matchContext.id).subscribe(matches => {
-      this.matchContext.matches = matches;
-      this.dataSource.data = matches;
-      if (this.matchContext.finished) {
-        this.unsubscribe();
+      if (matches) {
+        this.onMatchesLoaded(matches);
+        if (this.matchContext.finished) {
+          this.unsubscribe();
+        }
       }
-      this.spinner.hide();
     });
   }
 
@@ -74,6 +70,12 @@ export class MatchTableComponent implements OnInit, OnChanges, OnDestroy {
 
   deleteMatch(match: Match) {
     this.matchService.delete(match.id).then();
+  }
+
+  protected onMatchesLoaded(matches: Array<Match>) {
+    this.matchContext.matches = matches;
+    this.dataSource.data = matches;
+    this.spinner.hide();
   }
 
   private unsubscribe() {

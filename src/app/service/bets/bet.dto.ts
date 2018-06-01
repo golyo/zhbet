@@ -1,4 +1,3 @@
-import {Round} from '../context/context.dto';
 import {Match, MatchResult, Team} from '../matches/match.dto';
 
 export class UserBetPoint {
@@ -9,10 +8,33 @@ export class UserBetPoint {
 }
 
 export class MatchResultBet extends Match {
+  betId: string;
+  user: string;
+  bet: MatchResult;
+  point: number;
+  constructor(match: Match, bet: BetDto) {
+    super(match.id, match.home, match.away, match.start, match.result);
+    if (bet) {
+      this.betId = bet.id;
+      this.user = bet.user;
+      this.bet = MatchResult.fromString(bet.bet);
+      this.point = bet.point;
+    }
+  }
+}
+
+export class BetDto {
+  id: string;
+  user: string;
   matchId: string;
-  constructor(matchId: string, home: string, away: string) {
-    super(home, away);
+  bet: string;
+  point: number;
+  constructor(id: string, user: string, matchId: string, bet: string, point?: number) {
+    this.id = id;
+    this.user = user;
     this.matchId = matchId;
+    this.bet = bet;
+    this.point = point;
   }
 }
 

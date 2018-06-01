@@ -1,16 +1,15 @@
 import {ZhBetErrorStateMatcher} from '../../../util/error-state-matcher';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
-import {AbstractControl, FormControl, PatternValidator, ValidatorFn, Validators} from '@angular/forms';
+import {AbstractControl, FormControl, ValidatorFn, Validators} from '@angular/forms';
 import {ContextService} from '../../../service/context/context.service';
 import {MatchService} from '../../../service/matches/match.service';
-import {Match, MatchResult, Team} from '../../../service/matches/match.dto';
+import {Match, MatchResult, RESULT_DELIM, Team} from '../../../service/matches/match.dto';
 import {TeamService} from '../../../service/team/team-service';
 import {Subscription} from 'rxjs';
 import {SpinnerService} from '../../../components/spinner/spinner.service';
 
 const TIME_DELIM = ':';
-const RESULT_DELIM = '-';
 
 @Component({
   selector: 'app-edit-match',
@@ -38,7 +37,7 @@ export class EditMatchComponent implements OnInit, OnDestroy {
       this.dateControl.setValue(match.start);
       this.timeControl.setValue(match.start.getHours() + TIME_DELIM + match.start.getMinutes());
       if (match.result) {
-        this.resultControl.setValue(match.result.home + RESULT_DELIM + match.result.away);
+        this.resultControl.setValue(match.result.toString());
       }
       if (data.resultMode) {
         this.homeControl.disable();
@@ -64,9 +63,8 @@ export class EditMatchComponent implements OnInit, OnDestroy {
   saveMatch() {
     const match = this.getMatch();
     if (!this.resultControl.disabled) {
-      const results = this.resultControl.value.split(RESULT_DELIM);
       if (this.resultControl.valid) {
-        match.result = results.length === 2 ? new MatchResult(results[0], results[1]) : undefined;
+        match.result = MatchResult.fromString(this.resultControl.value);
         this.runPromise(this.matchService.updateResult(match));
       }
       console.log('XXX', match.result);
@@ -99,7 +97,7 @@ export class EditMatchComponent implements OnInit, OnDestroy {
   }
 }
 
-function resultValidator(): ValidatorFn {
+export function resultValidator(): ValidatorFn {
   return (control: AbstractControl): {[key: string]: any} => {
     if (control.value) {
       const results = control.value.split(RESULT_DELIM);

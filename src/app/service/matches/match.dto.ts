@@ -1,7 +1,9 @@
+export const RESULT_DELIM = '-';
+
 export class Match {
   id: string;
-  home: String;
-  away: String;
+  home: string;
+  away: string;
   start: Date;
   result: MatchResult;
 
@@ -44,6 +46,10 @@ export class MatchResult {
   }
   toString() {
     return this.home + '-' + this.away;
+  }
+  static fromString(resultStr: string): MatchResult {
+    const results = resultStr.split(RESULT_DELIM);
+    return results.length === 2 ? new MatchResult(parseInt(results[0]), parseInt(results[1])) : undefined;
   }
 }
 

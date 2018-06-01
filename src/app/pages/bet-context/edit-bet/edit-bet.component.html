@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>Add My Bet</h2>
+<mat-dialog-content>
+  <div>
+    <mat-form-field appearance="standard">
+      <mat-label>Home</mat-label>
+      <input matInput [value]="bet.home" disabled>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="standard">
+      <mat-label>Away</mat-label>
+      <input matInput [value]="bet.away" disabled>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="standard">
+      <mat-label>Start Date</mat-label>
+      <input matInput [value]="bet.start | date: 'short'" disabled>
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field appearance="standard">
+      <mat-label>Bet</mat-label>
+      <input matInput placeholder="Bet" mask="09-09" [formControl]="resultControl" [dropSpecialCharacters]="false">
+      <mat-hint>Example: 3-1</mat-hint>
+      <mat-error *ngIf="resultControl.hasError('invalidResult')">
+        Invalid Bet
+      </mat-error>
+    </mat-form-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button color="primary" (click)="saveBet()">Save</button>
+  <button mat-raised-button (click)="close()">Cancel</button>
+</mat-dialog-actions>

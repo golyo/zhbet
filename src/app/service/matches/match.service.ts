@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore, AngularFirestoreCollection} from 'angularfire2/firestore';
-import {Observable} from 'rxjs';
-import {Match, MatchResult, Team} from './match.dto';
+import {Match, MatchResult} from './match.dto';
 import {FirestoreCollectionService} from '../firestore-collection.service';
 
 @Injectable()
