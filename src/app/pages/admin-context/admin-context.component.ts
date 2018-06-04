@@ -75,7 +75,7 @@ export class AdminContextComponent implements OnInit, OnDestroy {
 
   addNewMatch() {
     this.dialog.open(EditMatchComponent, {
-      width: '500px',
+      width: '500px'
     });
   }
 

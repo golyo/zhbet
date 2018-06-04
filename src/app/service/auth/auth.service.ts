@@ -80,7 +80,6 @@ export class AuthService {
           return new User(userDoc.payload.doc.id, dbObject.name, dbObject.email, dbObject.roles);
       })))
         .subscribe((users) => {
-          console.log('USERS LOADED', users);
           if (users.length > 0) {
             this._user = users[0];
           } else {

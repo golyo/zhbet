@@ -54,10 +54,11 @@ export class BetTableComponent extends MatchTableComponent implements OnInit, On
             const betDto = items ? items.find((item) => item.matchId === match.id) : null;
             matchBets.push(new MatchResultBet(match, betDto));
           });
-          console.log('BET READY', matches, matchBets);
           super.onMatchesLoaded(matchBets);
         }
       });
+    } else {
+      super.onMatchesLoaded(this.matchContext.matches);
     }
   }
 }

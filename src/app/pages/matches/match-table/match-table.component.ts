@@ -47,7 +47,6 @@ export class MatchTableComponent implements OnInit, OnChanges, OnDestroy {
     this.spinner.show();
     this.unsubscribe();
     this.dataSource.data = [];
-    console.log('RELOAD MATCHES');
     this.matchSubscription = this.matchService.getItems(this.matchContext.rootId, this.matchContext.id).subscribe(matches => {
       if (matches) {
         this.onMatchesLoaded(matches);

@@ -38,6 +38,7 @@ export class ContextTreeComponent implements OnInit {
       if (context) {
         this.dataSource.data = [context];
         this.treeControl.expandAll();
+        this.onSelect(context.getFirstChildren().id);
       }
     });
   }

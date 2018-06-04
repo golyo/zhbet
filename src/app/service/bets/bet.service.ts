@@ -19,7 +19,7 @@ export class BetService extends FirestoreCollectionService<BetDto> {
 
   protected transformToUpdateDbObject(item: BetDto) {
     return {
-      result: item.bet,
+      bet: item.bet,
     };
   }
   protected transformToDbObject(item: BetDto): any {

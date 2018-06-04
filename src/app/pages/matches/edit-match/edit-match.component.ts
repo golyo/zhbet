@@ -29,24 +29,22 @@ export class EditMatchComponent implements OnInit, OnDestroy {
 
   constructor(private dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: any, private spinner: SpinnerService,
               private contextService: ContextService, private teamService: TeamService, private matchService: MatchService) {
-    const match = (data ? data.match : undefined) as Match;
-    if (match) {
-      this.id = data.match.id;
-      this.homeControl.setValue(match.home);
-      this.awayControl.setValue(match.away);
-      this.dateControl.setValue(match.start);
-      this.timeControl.setValue(match.start.getHours() + TIME_DELIM + match.start.getMinutes());
-      if (match.result) {
-        this.resultControl.setValue(match.result.toString());
-      }
-      if (data.resultMode) {
-        this.homeControl.disable();
-        this.awayControl.disable();
-        this.dateControl.disable();
-        this.timeControl.disable();
-      } else {
-        this.resultControl.disable();
-      }
+    const match = data ? data.match : new Match();
+    this.id = match.id;
+    this.homeControl.setValue(match.home);
+    this.awayControl.setValue(match.away);
+    this.dateControl.setValue(match.start);
+    this.timeControl.setValue(match.start ? match.start.getHours() + TIME_DELIM + match.start.getMinutes() : '');
+    if (match.result) {
+      this.resultControl.setValue(match.result ? match.result.toString() : '');
+    }
+    if (data && data.resultMode) {
+      this.homeControl.disable();
+      this.awayControl.disable();
+      this.dateControl.disable();
+      this.timeControl.disable();
+    } else {
+      this.resultControl.disable();
     }
   }
 
@@ -67,7 +65,6 @@ export class EditMatchComponent implements OnInit, OnDestroy {
         match.result = MatchResult.fromString(this.resultControl.value);
         this.runPromise(this.matchService.updateResult(match));
       }
-      console.log('XXX', match.result);
     } else if (this.homeControl.valid && this.awayControl.valid && this.dateControl.valid && this.timeControl.valid) {
       if (this.id) {
         this.runPromise(this.matchService.update(this.id, match));

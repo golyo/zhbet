@@ -12,15 +12,13 @@ export abstract class FirestoreCollectionService<T> {
 
   getItems(...params: string[]): Observable<Array<T>> {
     if (this.isChanged(params)) {
-      console.log('TRY TO LOAD ITEMS', params);
+      this.collectionSubject.next(undefined);
       this.prevParams = params;
       this.resetCollectionSubscription();
       this.subscription = this.transformFirestoreCollection(this.getItemCollection(params)).subscribe(items => {
-        console.log('ITEMS LOADED', items);
         this.collectionSubject.next(this.transformCollection(items));
       });
     }
-    console.log('FIRST SUBSCRIPTION', this.collectionSubject.getValue());
     return this.collectionSubject.asObservable();
   }
 

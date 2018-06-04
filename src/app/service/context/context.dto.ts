@@ -49,6 +49,10 @@ export class MatchContext {
     return this.parent ? this.parent.rootId : this.id;
   }
 
+  getFirstChildren() {
+    return this.children.length ? this.children[0].getFirstChildren() : this;
+  }
+
   add(parentId: string, context: MatchContext) {
     const parent = this.find(parentId);
     parent.children.push(context);
