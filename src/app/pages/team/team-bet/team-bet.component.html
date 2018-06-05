@@ -1,0 +1,21 @@
+<form *ngIf="teamBet">
+  <mat-card>
+    <mat-card-title>Edit team bets</mat-card-title>
+    <mat-card-content>
+      <div *ngFor="let bet of editedBets; let i = index">
+        <mat-form-field appearance="standard">
+          <mat-label>Team {{ i + 1 }}</mat-label>
+          <mat-select placeholder="Home" [(value)]="bet.teamId">
+            <mat-option *ngFor="let team of teams" [value]="team.id">
+              {{ team.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="primary" (click)="save()">Save</button>
+      <button mat-raised-button (click)="cancel()">Cancel</button>
+    </mat-card-actions>
+  </mat-card>
+</form>

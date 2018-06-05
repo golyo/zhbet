@@ -49,6 +49,7 @@ import { BetContextComponent } from './pages/bet-context/bet-context.component';
 import { EditBetComponent } from './pages/bet-context/edit-bet/edit-bet.component';
 import {BetService} from './service/bets/bet.service';
 import { BetTableComponent } from './pages/bet-context/bet-table/bet-table.component';
+import {TeamBetComponent} from './pages/team/team-bet/team-bet.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { BetTableComponent } from './pages/bet-context/bet-table/bet-table.compo
     NamePickerComponent,
     BetContextComponent,
     EditBetComponent,
-    BetTableComponent
+    BetTableComponent,
+    TeamBetComponent
   ],
   imports: [
     RouterModule.forRoot(

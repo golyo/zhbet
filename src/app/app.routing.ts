@@ -8,6 +8,7 @@ import {TeamComponent} from './pages/team/team.component';
 import {MatchContextComponent} from './pages/match-context/match-context.component';
 import {AdminContextComponent} from './pages/admin-context/admin-context.component';
 import {BetContextComponent} from './pages/bet-context/bet-context.component';
+import {TeamBetComponent} from './pages/team/team-bet/team-bet.component';
 
 export const appRoutes: Routes = [
   {
@@ -18,12 +19,16 @@ export const appRoutes: Routes = [
     path: 'login',
     component: LoginComponent
   }, {
-    path: 'team',
+    path: 'teamAdmin',
     component: TeamComponent,
     canActivate: [AuthorizationGuard],
     data: {
       checkContext: true
     }
+  }, {
+    path: 'team',
+    component: TeamBetComponent,
+    canActivate: [AuthorizationGuard]
   }, {
     path: 'context',
     component: MatchContextComponent,

@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore, AngularFirestoreCollection} from 'angularfire2/firestore';
-import {Match, MatchResult} from './match.dto';
+import {Match, MatchResult, Team} from './match.dto';
 import {FirestoreCollectionService} from '../firestore-collection.service';
+import {MatchContext} from '../context/context.dto';
 
 @Injectable()
 export class MatchService extends FirestoreCollectionService<Match> {
@@ -10,6 +11,15 @@ export class MatchService extends FirestoreCollectionService<Match> {
     super();
   }
 
+  updateAll(context: MatchContext, teams: Array<Team>) {
+    context.matches.forEach(match => {
+      match.away = teams.find((team) => team.name === match.away).id;
+      match.home = teams.find((team) => team.name === match.home).id;
+      this.update(match.id, match).then(() => {
+        console.log('Match updated', match);
+      });
+    });
+  }
   updateResult(match: Match): Promise<void> {
     // TODO UPDATE BETS
     return this.getFinalCollection().doc(match.id).update({result: this.transformResultToObject(match.result)});

@@ -51,7 +51,8 @@ export class BetContext {
   }
 }
 
-export class WinnerBet {
+export class TeamBetDto {
   user: string;
-  teams: Array<Team>;
+  point: number;
+  teams = new Array<string>(4).fill(null);
 }

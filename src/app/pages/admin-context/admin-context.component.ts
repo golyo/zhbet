@@ -9,6 +9,8 @@ import {NewContextModalComponent} from './new-context-modal/new-context-modal.co
 import {MatchService} from '../../service/matches/match.service';
 import {SpinnerService} from '../../components/spinner/spinner.service';
 import {EditMatchComponent} from '../matches/edit-match/edit-match.component';
+import {TeamService} from '../../service/team/team-service';
+import {Team} from '../../service/matches/match.dto';
 
 @Component({
   selector: 'app-admin-context',
@@ -18,11 +20,11 @@ export class AdminContextComponent implements OnInit, OnDestroy {
 
   context: RootContext;
   selectedContext: MatchContext;
-
+  teams: Array<Team>;
   private contextSubscription: Subscription;
 
 
-  constructor(private contextService: ContextService, private matchService: MatchService,
+  constructor(private contextService: ContextService, private matchService: MatchService, private teamService: TeamService,
               private dialog: MatDialog, private snack: MatSnackBar, private spinner: SpinnerService) {
   }
 
@@ -32,6 +34,9 @@ export class AdminContextComponent implements OnInit, OnDestroy {
         this.selectedContext = null;
       }
       this.context = context;
+    });
+    this.teamService.getItems(this.contextService.selectedRoot).subscribe(teams => {
+      this.teams = teams;
     });
   }
 
@@ -81,5 +86,9 @@ export class AdminContextComponent implements OnInit, OnDestroy {
 
   onSelectNode(context: MatchContext) {
     this.selectedContext = context;
- }
+  }
+
+  transformAll() {
+    this.matchService.updateAll(this.selectedContext, this.teams);
+  }
 }
