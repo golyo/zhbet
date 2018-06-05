@@ -8,9 +8,9 @@ import {SpinnerService} from '../../../components/spinner/spinner.service';
 import {MatSnackBar} from '@angular/material';
 
 class TeamBetVo {
-  teamId: string;
-  constructor(teamId: string) {
-    this.teamId = teamId;
+  team: string;
+  constructor(team: string) {
+    this.team = team;
   }
 }
 @Component({
@@ -35,10 +35,8 @@ export class TeamBetComponent implements OnInit, OnDestroy {
         this.teamBetSubscription = this.teamService.getTeamBet(this.contextService.selectedRoot).subscribe(teamBet => {
           this.teamBet = teamBet || new TeamBetDto();
           this.editedBets = this.teamBet.teams.map((bet => {
-            console.log('XXX', bet);
             return new TeamBetVo(bet);
           }));
-          console.log('Team bets loaded', teamBet, this.editedBets);
         });
       }
     });
@@ -55,10 +53,8 @@ export class TeamBetComponent implements OnInit, OnDestroy {
 
   save() {
     this.spinner.show();
-    console.log('TRY TO SAVE', this.editedBets);
-
     this.teamBet.teams = this.editedBets.map(vo => {
-      return vo.teamId;
+      return vo.team;
     });
     this.teamService.updateTeamBet(this.contextService.selectedRoot, this.teamBet).then(() => {
       this.spinner.hide();

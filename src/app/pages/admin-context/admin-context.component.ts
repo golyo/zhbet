@@ -87,8 +87,4 @@ export class AdminContextComponent implements OnInit, OnDestroy {
   onSelectNode(context: MatchContext) {
     this.selectedContext = context;
   }
-
-  transformAll() {
-    this.matchService.updateAll(this.selectedContext, this.teams);
-  }
 }

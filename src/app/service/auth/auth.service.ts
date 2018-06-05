@@ -13,7 +13,7 @@ export const ADMIN_ROLE = 'ADMIN';
 @Injectable()
 export class AuthService {
   private _user: User;
-  private userChanged = new Subject<boolean>();
+  private userChanged = new Subject<User>();
 
   constructor(private afAuth: AngularFireAuth, protected store: AngularFirestore) {
     const val = localStorage.getItem(USER_KEY);
@@ -39,7 +39,7 @@ export class AuthService {
     localStorage.setItem(USER_KEY, '');
   }
 
-  getUserChangeObservable(): Observable<boolean> {
+  getUserChangeObservable(): Observable<User> {
     return this.userChanged.asObservable();
   }
 
@@ -71,7 +71,7 @@ export class AuthService {
     if (!fUser) {
       // User logged out
       delete this._user;
-      this.userChanged.next(false);
+      this.userChanged.next(null);
     } else if (!this._user || this._user.email !== fUser.email) {
       // USer changed
       this.store.collection('users', ref => ref.where('email', '==', fUser.email))
@@ -86,10 +86,10 @@ export class AuthService {
             this._user = new User(null, fUser.displayName, fUser.email, []);
           }
           localStorage.setItem(USER_KEY, JSON.stringify(this._user));
-          this.userChanged.next(true);
+          this.userChanged.next(this._user);
         });
     } else {
-      this.userChanged.next(true);
+      this.userChanged.next(this._user);
     }
   }
 }

@@ -29,7 +29,7 @@
   <ng-container matColumnDef="betOps">
     <th mat-header-cell *matHeaderCellDef ></th>
     <td mat-cell *matCellDef="let element">
-      <button mat-icon-button color="primary" (click)="editBet(element)">
+      <button mat-icon-button color="primary" (click)="editBet(element)" *ngIf="!element.isRunning">
         <mat-icon aria-label="Delete">edit</mat-icon>
       </button>
     </td>

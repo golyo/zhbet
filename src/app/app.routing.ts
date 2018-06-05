@@ -19,11 +19,19 @@ export const appRoutes: Routes = [
     path: 'login',
     component: LoginComponent
   }, {
+    path: 'admin',
+    component: AdminContextComponent,
+    canActivate: [AuthorizationGuard],
+    data: {
+      roles: ['ADMIN']
+    }
+  }, {
     path: 'teamAdmin',
     component: TeamComponent,
     canActivate: [AuthorizationGuard],
     data: {
-      checkContext: true
+      checkContext: true,
+      roles: ['ADMIN']
     }
   }, {
     path: 'team',
@@ -37,10 +45,6 @@ export const appRoutes: Routes = [
     path: 'bets',
     component: BetContextComponent,
     canActivate: [AuthorizationGuard]
-  }, {
-    path: 'admin',
-    component: AdminContextComponent,
-    canActivate: [AuthorizationGuard],
   }, {
     path: 'home',
     component: HomeComponent,

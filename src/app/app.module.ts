@@ -50,10 +50,12 @@ import { EditBetComponent } from './pages/bet-context/edit-bet/edit-bet.componen
 import {BetService} from './service/bets/bet.service';
 import { BetTableComponent } from './pages/bet-context/bet-table/bet-table.component';
 import {TeamBetComponent} from './pages/team/team-bet/team-bet.component';
+import {HasPermissionDirective} from './service/auth/has-permission.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
+    HasPermissionDirective,
     PageNotFoundComponent,
     SpinnerComponent,
     HomeComponent,

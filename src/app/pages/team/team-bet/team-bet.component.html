@@ -5,8 +5,8 @@
       <div *ngFor="let bet of editedBets; let i = index">
         <mat-form-field appearance="standard">
           <mat-label>Team {{ i + 1 }}</mat-label>
-          <mat-select placeholder="Home" [(value)]="bet.teamId">
-            <mat-option *ngFor="let team of teams" [value]="team.id">
+          <mat-select placeholder="Home" [(value)]="bet.team">
+            <mat-option *ngFor="let team of teams" [value]="team.name">
               {{ team.name }}
             </mat-option>
           </mat-select>

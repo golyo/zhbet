@@ -4,9 +4,10 @@ import {Subscription} from 'rxjs';
 import {SpinnerService} from '../../../components/spinner/spinner.service';
 import {MatchService} from '../../../service/matches/match.service';
 import {MatDialog, MatTableDataSource} from '@angular/material';
-import {Match} from '../../../service/matches/match.dto';
+import {Match, Team} from '../../../service/matches/match.dto';
 import {EditMatchComponent} from '../edit-match/edit-match.component';
 import {EditBetComponent} from '../../bet-context/edit-bet/edit-bet.component';
+import {TeamService} from '../../../service/team/team-service';
 
 @Component({
   selector: 'app-match-table',

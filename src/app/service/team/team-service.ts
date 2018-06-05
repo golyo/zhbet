@@ -23,7 +23,6 @@ export class TeamService extends FirestoreCollectionService<Team> {
       userId: userId,
       teams: teamBet.teams
     };
-    console.log('Try to save', dbObject);
     return this.store.collection(`rootContext/${rootContext}/teamBet/`).doc(userId).set(dbObject);
   }
 

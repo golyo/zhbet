@@ -71,7 +71,7 @@ export abstract class FirestoreCollectionService<T> {
     }));
   }
 
-  private isChanged(params: string[]): boolean {
+  protected isChanged(params: string[]): boolean {
     return !this.prevParams || this.prevParams.length !== params.length || !params.every((param, idx) => {
       return param === this.prevParams[idx];
     });
