@@ -33,6 +33,11 @@ export class ContextService {
     return this.contextSubject.asObservable();
   }
 
+  updateRootStart(rootId: string, start: Date): Promise<any> {
+    return this.store.collection<RootContextDto>('rootContext').doc(rootId).update({
+      start: start
+    });
+  }
 
   get selectedRoot() {
     return this._selectedRoot;

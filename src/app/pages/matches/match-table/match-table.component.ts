@@ -63,7 +63,8 @@ export class MatchTableComponent implements OnInit, OnChanges, OnDestroy {
       width: '500px',
       data: {
         match: match,
-        resultMode: resultMode
+        resultMode: resultMode,
+        rootStart: this.matchContext.getRoot().start
       }
     });
   }

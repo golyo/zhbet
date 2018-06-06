@@ -1,16 +1,20 @@
 import {Match} from '../matches/match.dto';
 import {PointRule} from './rule.dto';
+import * as firebase from 'firebase';
+import Timestamp = firebase.firestore.Timestamp;
 
 export class RootContextDto {
   type: string;
   year: number;
   name: string;
   id: string;
+  start: Timestamp;
   isActive: boolean;
   rule: PointRule;
-  constructor(year?: number, type?: string) {
+  constructor(year?: number, type?: string, start?: Timestamp) {
     this.year = year;
     this.type = type;
+    this.start = start;
     this.rule = new PointRule();
   }
 }
@@ -33,6 +37,7 @@ export class MatchContext {
   finished: boolean;
   parent: MatchContext;
   children: Array<MatchContext>;
+  // TODO isRunning: boolean;
   matches: Array<Match>;
 
   constructor(id?: string, name?: string) {
@@ -47,6 +52,10 @@ export class MatchContext {
 
   get rootId() {
     return this.parent ? this.parent.rootId : this.id;
+  }
+
+  getRoot(): RootContext {
+    return (this.parent ? this.parent.getRoot() : this) as RootContext;
   }
 
   getFirstChildren() {
@@ -77,6 +86,7 @@ export class MatchContext {
 export class RootContext extends MatchContext {
   type: string;
   year: number;
+  start: Date;
   isActive: boolean;
   rule: PointRule;
   constructor(type?: string, year?: number) {
@@ -88,17 +98,9 @@ export class RootContext extends MatchContext {
 
   static fromDto(contextDto: RootContextDto) {
     const context = new RootContext(contextDto.type, contextDto.year);
+    context.start = contextDto.start ? new Date(contextDto.start.seconds * 1000) : null;
     context.rule = contextDto.rule;
     context.children = [];
     return context;
   }
-}
-
-export class Round {
-  id: string;
-  parentContext: string;
-  rootContext: string;
-  name: string;
-  matches: Array<Match>;
-  isActive: boolean;
 }

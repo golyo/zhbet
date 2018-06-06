@@ -36,7 +36,10 @@ export const appRoutes: Routes = [
   }, {
     path: 'team',
     component: TeamBetComponent,
-    canActivate: [AuthorizationGuard]
+    canActivate: [AuthorizationGuard],
+    data: {
+      checkContext: true
+    }
   }, {
     path: 'context',
     component: MatchContextComponent,

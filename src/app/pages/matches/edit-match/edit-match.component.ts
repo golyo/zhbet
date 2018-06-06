@@ -71,6 +71,9 @@ export class EditMatchComponent implements OnInit, OnDestroy {
       } else {
         this.runPromise(this.matchService.add(match));
       }
+      if (match.start && (!this.data.rootStart || this.data.rootStart.getTime() > match.start.getTime())) {
+        this.contextService.updateRootStart(this.contextService.selectedRoot, match.start).then();
+      }
     }
   }
 
@@ -98,7 +101,7 @@ export function resultValidator(): ValidatorFn {
   return (control: AbstractControl): {[key: string]: any} => {
     if (control.value) {
       const results = control.value.split(RESULT_DELIM);
-      if (results.length === 1) {
+      if (results.length === 1 || (results.length === 2 && !results[1])) {
         return {'invalidResult': {value: control.value}};
       }
     }

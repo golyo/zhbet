@@ -15,7 +15,7 @@ export class MatchResultBet extends Match {
   isRunning: boolean;
   constructor(match: Match, bet: BetDto) {
     super(match.id, match.home, match.away, match.start, match.result);
-    this.isRunning = new Date().getTime() - match.start.getTime() > 0;
+    this.isRunning = match.isRunning;
     if (bet) {
       this.betId = bet.id;
       this.user = bet.user;

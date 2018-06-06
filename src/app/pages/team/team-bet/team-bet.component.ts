@@ -6,6 +6,7 @@ import {Subscription} from 'rxjs';
 import {TeamBetDto} from '../../../service/bets/bet.dto';
 import {SpinnerService} from '../../../components/spinner/spinner.service';
 import {MatSnackBar} from '@angular/material';
+import {RootContext} from '../../../service/context/context.dto';
 
 class TeamBetVo {
   team: string;
@@ -21,14 +22,23 @@ class TeamBetVo {
 export class TeamBetComponent implements OnInit, OnDestroy {
   teams: Array<Team>;
   teamBet: TeamBetDto;
+  isRunning: boolean;
+  selectedRoot: RootContext;
   teamsSubscription: Subscription;
   teamBetSubscription: Subscription;
+  contextSubscription: Subscription;
   editedBets: Array<TeamBetVo>;
   constructor(private contextService: ContextService, private teamService: TeamService, private spinner: SpinnerService,
               private snack: MatSnackBar) {
   }
 
   ngOnInit() {
+    this.contextSubscription = this.contextService.getSelectedContext().subscribe(selectedRoot => {
+      if (selectedRoot) {
+        this.selectedRoot = selectedRoot;
+        this.isRunning = new Date().getTime() > this.selectedRoot.start.getTime();
+      }
+    });
     this.teamsSubscription = this.teamService.getItems(this.contextService.selectedRoot).subscribe((teams) => {
       if (teams) {
         this.teams = teams;
@@ -43,6 +53,9 @@ export class TeamBetComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.contextSubscription) {
+      this.contextSubscription.unsubscribe();
+    }
     if (this.teamsSubscription) {
       this.teamsSubscription.unsubscribe();
     }

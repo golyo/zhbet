@@ -6,12 +6,14 @@ export class Match {
   away: string;
   start: Date;
   result: MatchResult;
+  isRunning: boolean;
 
   constructor(id?: string, home?: string, away?: string, start?: Date, result?: MatchResult) {
     this.id = id;
     this.home = home;
     this.away = away;
     this.start = start;
+    this.isRunning = new Date().getTime() - start.getTime() > 0;
     this.result = result;
   }
 }
@@ -44,12 +46,12 @@ export class MatchResult {
       this.result = MatchFlag.EQ;
     }
   }
-  toString() {
-    return this.home + '-' + this.away;
-  }
   static fromString(resultStr: string): MatchResult {
     const results = resultStr.split(RESULT_DELIM);
     return results.length === 2 ? new MatchResult(parseInt(results[0]), parseInt(results[1])) : undefined;
+  }
+  toString() {
+    return this.home + '-' + this.away;
   }
 }
 
