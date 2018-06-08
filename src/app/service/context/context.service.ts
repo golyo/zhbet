@@ -16,7 +16,7 @@ export class ContextService {
 
   constructor(private store: AngularFirestore) {
     this.rootContextCollection = this.store.collection<MatchContextDto>('rootContext');
-    this._selectedRoot = localStorage.getItem(CONTEXT_KEY);
+    this._selectedRoot = localStorage.getItem(CONTEXT_KEY) || '2018_VB';
     this.changeContext();
   }
 

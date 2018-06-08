@@ -81,7 +81,10 @@ import {HasPermissionDirective} from './service/auth/has-permission.directive';
   imports: [
     RouterModule.forRoot(
       appRoutes,
-      // {enableTracing: true} // <-- debugging purposes only
+      {
+        useHash: true
+        // {enableTracing: true} // <-- debugging purposes only
+      }
     ),
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
