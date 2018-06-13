@@ -1,0 +1,61 @@
+<mat-card>
+  <mat-card-title>Point Table {{ filtered ? myContext : 'Free Game'}}</mat-card-title>
+  <mat-card-actions *ngIf="myContext">
+    <button mat-raised-button color="primary" (click)="toggleFilter()" *ngIf="!filtered">Show Only Payed Users</button>
+    <button mat-raised-button color="primary" (click)="toggleFilter()" *ngIf="filtered">Show All Users</button>
+  </mat-card-actions>
+  <mat-card-content>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="pos">
+        <th mat-header-cell *matHeaderCellDef> Pos.</th>
+        <td mat-cell *matCellDef="let element; let i = index;"> {{i+1}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name</th>
+        <td mat-cell *matCellDef="let element"> {{element.name}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> Email</th>
+        <td mat-cell *matCellDef="let element"> {{element.email}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="context">
+        <th mat-header-cell *matHeaderCellDef> Context</th>
+        <td mat-cell *matCellDef="let element"> {{element.context}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="point">
+        <th mat-header-cell *matHeaderCellDef> Point</th>
+        <td mat-cell *matCellDef="let element"> {{element.point}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="teamPoint">
+        <th mat-header-cell *matHeaderCellDef> Team Point</th>
+        <td mat-cell *matCellDef="let element"> {{element.teamPoint}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="betPoint">
+        <th mat-header-cell *matHeaderCellDef> Bet Point</th>
+        <td mat-cell *matCellDef="let element"> {{element.betPoint}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="ops">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary" (click)="showDetails(element)" title="Details">
+            <mat-icon aria-label="Details">details</mat-icon>
+          </button>
+          <button mat-icon-button color="primary" (click)="setPaid(element)" title="Set Paid" *ngIf="false">
+            <mat-icon aria-label="Paid">payment</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>

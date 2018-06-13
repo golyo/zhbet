@@ -53,9 +53,11 @@ export class HasPermissionDirective implements OnInit, OnDestroy {
 
   private checkPermission(): boolean {
     if (this.currentUser && this.currentUser.roles) {
+      console.log('Check permissions', this.permissions, this.currentUser.roles);
       for (const checkPermission of this.permissions) {
         const permissionFound = this.currentUser.roles.find(x => x.toUpperCase() === checkPermission.toUpperCase());
         if (permissionFound) {
+          console.log('Permission found to user', this.permissions);
           return true;
         }
       }

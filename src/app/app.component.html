@@ -9,7 +9,7 @@
       <button mat-button routerLink="home">Home</button>
       <button mat-button routerLink="bets">Bets</button>
       <button mat-button routerLink="team">Teams</button>
-      <button mat-button routerLink="context">Reports</button>
+      <button mat-button routerLink="riport">Reports</button>
       <!--
       <button mat-button routerLink="matches">Matches</button>
       -->
@@ -20,6 +20,14 @@
     </span>
   </mat-toolbar-row>
 </mat-toolbar>
-
+<mat-card *ngIf="user && !user.context">
+  <mat-card-title>!!!</mat-card-title>
+  <mat-card-content>
+    <b style="color: red">Ha látod ezt a feliratot, akkor nem neveztél a fizetős bajnokságba, vagy nem vett fel Golyó téged oda !
+      Csak ő tudja miért, kérdezz bátran tőle !
+    </b><br/>
+    A 'Reports' menü alatt látod kik neveztek már !
+  </mat-card-content>
+</mat-card>
 <router-outlet></router-outlet>
 <app-spinner></app-spinner>

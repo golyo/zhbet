@@ -51,6 +51,7 @@ import {BetService} from './service/bets/bet.service';
 import { BetTableComponent } from './pages/bet-context/bet-table/bet-table.component';
 import {TeamBetComponent} from './pages/team/team-bet/team-bet.component';
 import {HasPermissionDirective} from './service/auth/has-permission.directive';
+import { UserRiportComponent } from './pages/user-riport/user-riport.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +77,8 @@ import {HasPermissionDirective} from './service/auth/has-permission.directive';
     BetContextComponent,
     EditBetComponent,
     BetTableComponent,
-    TeamBetComponent
+    TeamBetComponent,
+    UserRiportComponent
   ],
   imports: [
     RouterModule.forRoot(

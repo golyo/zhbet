@@ -71,7 +71,7 @@ export class TeamBetComponent implements OnInit, OnDestroy {
     });
     this.teamService.updateTeamBet(this.contextService.selectedRoot, this.teamBet).then(() => {
       this.spinner.hide();
-      this.snack.open('Team bets saved');
+      this.snack.open('Team bets saved', undefined, { duration: 3000 });
     });
   }
 

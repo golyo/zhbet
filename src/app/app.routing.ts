@@ -9,6 +9,7 @@ import {MatchContextComponent} from './pages/match-context/match-context.compone
 import {AdminContextComponent} from './pages/admin-context/admin-context.component';
 import {BetContextComponent} from './pages/bet-context/bet-context.component';
 import {TeamBetComponent} from './pages/team/team-bet/team-bet.component';
+import {UserRiportComponent} from './pages/user-riport/user-riport.component';
 
 export const appRoutes: Routes = [
   {
@@ -55,6 +56,13 @@ export const appRoutes: Routes = [
   }, {
     path: 'matches',
     component: MatchesComponent,
+    canActivate: [AuthorizationGuard],
+    data: {
+      checkContext: true
+    }
+  }, {
+    path: 'riport',
+    component: UserRiportComponent,
     canActivate: [AuthorizationGuard],
     data: {
       checkContext: true

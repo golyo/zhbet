@@ -5,7 +5,7 @@ import {AngularFireAuth} from 'angularfire2/auth';
 import {AngularFirestore} from 'angularfire2/firestore';
 import * as firebase from 'firebase';
 import {map} from 'rxjs/internal/operators';
-import DocumentReference = firebase.firestore.DocumentReference;
+import {QueryFn} from 'angularfire2/firestore/interfaces';
 
 const USER_KEY = 'zhbet_user';
 export const ADMIN_ROLE = 'ADMIN';
@@ -16,8 +16,9 @@ export class AuthService {
   private userChanged = new Subject<User>();
 
   constructor(private afAuth: AngularFireAuth, protected store: AngularFirestore) {
-    const val = localStorage.getItem(USER_KEY);
-    this._user = val && val.length > 0 ? JSON.parse(val) : null;
+    const val = localStorage.getItem(USER_KEY) as any;
+    this._user = val && val.length > 0 ? this.transformToUser(JSON.parse(val), val.id) : null;
+    console.log('USER IN AUTH SERVICE', this._user);
     this.afAuth.authState.subscribe((fUser) => {
       this.onAuthStateChanged(fUser);
     });
@@ -25,6 +26,31 @@ export class AuthService {
 
   get user(): User {
     return this._user;
+  }
+
+  getUsers(all: boolean): Observable<Array<User>> {
+    const query: QueryFn = all ? undefined : ref => ref.where('context', '==', this._user.context);
+    return this.store.collection('users', query)
+      .snapshotChanges().pipe(map(actions => {
+      return actions.map(a => {
+        return this.transformToUser(a.payload.doc.data(), a.payload.doc.id);
+      }).sort((a, b) => {
+        return a.point - b.point;
+      });
+    }));
+  }
+
+  setPaid(user: User): Promise<any> {
+    return this.store.collection('users').doc(user.id).update({
+      context: 'Apu Kezdődik'
+    });
+  }
+  updateUserPoint(user: User, addBetPoint: number, addTeamPoint): Promise<any> {
+    return this.store.collection('users').doc(user.id).update({
+      point: user.point + addBetPoint + addTeamPoint,
+      teamPoint: user.teamPoint + addTeamPoint,
+      betPoint: user.betPoint + addBetPoint
+    });
   }
 
   login() {
@@ -67,28 +93,32 @@ export class AuthService {
     }
   }
 
+  private transformToUser(dbObject: any, id: string) {
+    return new User(id, dbObject.name, dbObject.email, dbObject.context, dbObject.point, dbObject.teamPoint, dbObject.betPoint, dbObject.roles);
+  }
   private onAuthStateChanged(fUser: firebase.User) {
     if (!fUser) {
       // User logged out
       delete this._user;
       this.userChanged.next(null);
-    } else if (!this._user || this._user.email !== fUser.email) {
+    } else if (!this._user || !this._user.id || this._user.email !== fUser.email) {
       // USer changed
       this.store.collection('users', ref => ref.where('email', '==', fUser.email))
         .snapshotChanges().pipe(map(users => users.map(userDoc => {
-          const dbObject = userDoc.payload.doc.data() as any;
-          return new User(userDoc.payload.doc.id, dbObject.name, dbObject.email, dbObject.roles);
+          console.log('USER, logged in', userDoc.payload.doc.data(), userDoc.payload.doc.id);
+          return this.transformToUser(userDoc.payload.doc.data(), userDoc.payload.doc.id);
       })))
         .subscribe((users) => {
           if (users.length > 0) {
             this._user = users[0];
           } else {
-            this._user = new User(null, fUser.displayName, fUser.email, []);
+            this._user = new User(null, fUser.displayName, fUser.email);
           }
           localStorage.setItem(USER_KEY, JSON.stringify(this._user));
           this.userChanged.next(this._user);
         });
     } else {
+      console.log('USER, from store', this._user);
       this.userChanged.next(this._user);
     }
   }
