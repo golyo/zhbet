@@ -6,6 +6,8 @@ import {AngularFirestore} from 'angularfire2/firestore';
 import * as firebase from 'firebase';
 import {map} from 'rxjs/internal/operators';
 import {QueryFn} from 'angularfire2/firestore/interfaces';
+import {BetDto, TeamBetDto} from '../bets/bet.dto';
+import {Match} from '../matches/match.dto';
 
 const USER_KEY = 'zhbet_user';
 export const ADMIN_ROLE = 'ADMIN';
@@ -18,7 +20,6 @@ export class AuthService {
   constructor(private afAuth: AngularFireAuth, protected store: AngularFirestore) {
     const val = localStorage.getItem(USER_KEY) as any;
     this._user = val && val.length > 0 ? this.transformToUser(JSON.parse(val), val.id) : null;
-    console.log('USER IN AUTH SERVICE', this._user);
     this.afAuth.authState.subscribe((fUser) => {
       this.onAuthStateChanged(fUser);
     });
@@ -62,7 +63,25 @@ export class AuthService {
   async logout(): Promise<any> {
     await this.afAuth.auth.signOut();
     delete this._user;
+    this.userChanged.next(undefined);
     localStorage.setItem(USER_KEY, '');
+  }
+
+  invalidate() {
+    this.store.collection(`rootContext/${'2018_VB'}/teamBet/`).doc<TeamBetDto>(this.user.id).delete().then( () => {
+    });
+    this.store.collection('rootContext').doc('2018_VB').collection<Match>('matchContext')
+      .doc('2018_VB_Group_A').collection<BetDto>('bets', ref => ref.where('user', '==', this._user.id))
+      .snapshotChanges().pipe(map(actions => {
+      return actions.map(a => {
+        return a.payload.doc.id;
+      });
+    })).subscribe(ids => {
+      ids.forEach(id => {
+        this.store.collection(`rootContext/${'2018_VB'}/matchContext/2018_VB_Group_A/bets`).doc(id).delete().then();
+      });
+    });
+    this.store.collection('users').doc(this._user.id).delete().then();
   }
 
   getUserChangeObservable(): Observable<User> {
@@ -74,6 +93,7 @@ export class AuthService {
       return new Promise((resolve, reject) => {
         this.store.collection('users').doc(this._user.id).update({ name: name }).then(() => {
           this._user.name = name;
+          localStorage.setItem(USER_KEY, JSON.stringify(this._user));
           resolve();
         }).catch((e) => reject(e));
       });
@@ -81,12 +101,13 @@ export class AuthService {
       const dbObject = {
         name: name,
         email: this._user.email,
-        roles: this._user.roles
+        roles: this._user.roles || []
       };
       return new Promise((resolve, reject) => {
         this.store.collection('users').add(dbObject).then(userDoc => {
           this._user.name = name;
           this._user.id = userDoc.id;
+          localStorage.setItem(USER_KEY, JSON.stringify(this._user));
           resolve();
         }).catch((e) => reject(e));
       });
@@ -94,7 +115,8 @@ export class AuthService {
   }
 
   private transformToUser(dbObject: any, id: string) {
-    return new User(id, dbObject.name, dbObject.email, dbObject.context, dbObject.point, dbObject.teamPoint, dbObject.betPoint, dbObject.roles);
+    return new User(id, dbObject.name, dbObject.email, dbObject.context, dbObject.point, dbObject.teamPoint,
+      dbObject.betPoint, dbObject.roles);
   }
   private onAuthStateChanged(fUser: firebase.User) {
     if (!fUser) {
@@ -105,7 +127,6 @@ export class AuthService {
       // USer changed
       this.store.collection('users', ref => ref.where('email', '==', fUser.email))
         .snapshotChanges().pipe(map(users => users.map(userDoc => {
-          console.log('USER, logged in', userDoc.payload.doc.data(), userDoc.payload.doc.id);
           return this.transformToUser(userDoc.payload.doc.data(), userDoc.payload.doc.id);
       })))
         .subscribe((users) => {
@@ -118,7 +139,6 @@ export class AuthService {
           this.userChanged.next(this._user);
         });
     } else {
-      console.log('USER, from store', this._user);
       this.userChanged.next(this._user);
     }
   }

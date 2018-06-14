@@ -33,7 +33,7 @@ export class AuthorizationGuard implements CanActivate {
    * @returns {boolean} True, if the given route is reachable by the current user.
    */
   protected isActivable(route: ActivatedRouteSnapshot, state: RouterStateSnapshot, roles: Array<string>, checkContext: boolean): boolean {
-    if (!this.authService.user) {
+    if (!this.authService.user || !this.authService.user.id) {
       this.router.navigate(['/login'], {queryParams: {returnUrl: state.url}}).then(() => false);
       return false;
     } else if (roles && !this.isAuthorized(roles)) {

@@ -48,7 +48,7 @@
           <button mat-icon-button color="primary" (click)="showDetails(element)" title="Details">
             <mat-icon aria-label="Details">details</mat-icon>
           </button>
-          <button mat-icon-button color="primary" (click)="setPaid(element)" title="Set Paid" *ngIf="false">
+          <button mat-icon-button color="primary" (click)="setPaid(element)" title="Set Paid" *appHasPermission="'ADMIN'">
             <mat-icon aria-label="Paid">payment</mat-icon>
           </button>
         </td>

@@ -51,7 +51,6 @@ export class UserRiportComponent implements OnInit, OnDestroy {
   }
 
   showDetails(user: User) {
-    console.log('Show user details later');
     this.snack.open('Under construction', undefined, { duration: 3000 });
   }
 

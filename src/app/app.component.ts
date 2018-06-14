@@ -22,7 +22,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.userSubscription = this.authService.getUserChangeObservable().subscribe(user => {
       this.user = user;
-      this.isAdmin = user && user.roles.findIndex((role) => role === 'ADMIN') >= 0;
+      this.isAdmin = user && user.roles && user.roles.findIndex((role) => role === 'ADMIN') >= 0;
     });
   }
   ngOnDestroy() {
@@ -34,6 +34,10 @@ export class AppComponent implements OnInit, OnDestroy {
       this.router.navigateByUrl('/login').then(() => {
       });
     });
+  }
+
+  invalidate(): void {
+    this.authService.invalidate();
   }
 
   changeNameDialog(): void {
