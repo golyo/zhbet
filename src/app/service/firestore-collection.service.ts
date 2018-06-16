@@ -3,9 +3,10 @@ import {AngularFirestoreCollection} from 'angularfire2/firestore';
 import {map} from 'rxjs/operators';
 import * as firebase from 'firebase';
 import DocumentReference = firebase.firestore.DocumentReference;
+import {BehaviorDefinedSubject} from '../util/behavior-defined-subject';
 
 export abstract class FirestoreCollectionService<T> {
-  protected collectionSubject = new BehaviorSubject<Array<T>>(undefined);
+  protected collectionSubject = new BehaviorDefinedSubject<Array<T>>();
 
   private subscription: Subscription;
   private prevParams: string[];
@@ -39,6 +40,10 @@ export abstract class FirestoreCollectionService<T> {
       this.subscription.unsubscribe();
       delete this.subscription;
     }
+  }
+
+  protected getOrigParams() {
+    return this.prevParams;
   }
 
   protected transformToUpdateDbObject(item: T) {

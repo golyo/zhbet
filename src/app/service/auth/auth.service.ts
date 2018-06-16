@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
 import {User} from './user.dto';
-import {Observable, Subject} from 'rxjs';
+import {BehaviorSubject, Observable, Subject} from 'rxjs';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {AngularFirestore} from 'angularfire2/firestore';
 import * as firebase from 'firebase';
 import {map} from 'rxjs/internal/operators';
-import {QueryFn} from 'angularfire2/firestore/interfaces';
 import {BetDto, TeamBetDto} from '../bets/bet.dto';
 import {Match} from '../matches/match.dto';
+import {BehaviorDefinedSubject} from '../../util/behavior-defined-subject';
 
 const USER_KEY = 'zhbet_user';
 export const ADMIN_ROLE = 'ADMIN';
@@ -16,6 +16,8 @@ export const ADMIN_ROLE = 'ADMIN';
 export class AuthService {
   private _user: User;
   private userChanged = new Subject<User>();
+
+  private usersSubject = new BehaviorDefinedSubject<Array<User>>();
 
   constructor(private afAuth: AngularFireAuth, protected store: AngularFirestore) {
     const val = localStorage.getItem(USER_KEY) as any;
@@ -29,28 +31,26 @@ export class AuthService {
     return this._user;
   }
 
-  getUsers(all: boolean): Observable<Array<User>> {
-    const query: QueryFn = all ? undefined : ref => ref.where('context', '==', this._user.context);
-    return this.store.collection('users', query)
-      .snapshotChanges().pipe(map(actions => {
-      return actions.map(a => {
-        return this.transformToUser(a.payload.doc.data(), a.payload.doc.id);
-      }).sort((a, b) => {
-        return a.point - b.point;
+  getUsers(): Observable<Array<User>> {
+    if (!this.usersSubject.value) {
+      // const query: QueryFn = all ? undefined : ref => ref.where('context', '==', this._user.context);
+      this.store.collection('users').snapshotChanges().pipe(map(actions => {
+        return actions.map(a => {
+          return this.transformToUser(a.payload.doc.data(), a.payload.doc.id);
+        });
+      })).subscribe(users => {
+        // firestore hack
+        if (users && users.length > 1) {
+          this.usersSubject.next(users);
+        }
       });
-    }));
+    }
+    return this.usersSubject.asObservable();
   }
 
   setPaid(user: User): Promise<any> {
     return this.store.collection('users').doc(user.id).update({
       context: 'Apu Kezdődik'
-    });
-  }
-  updateUserPoint(user: User, addBetPoint: number, addTeamPoint): Promise<any> {
-    return this.store.collection('users').doc(user.id).update({
-      point: user.point + addBetPoint + addTeamPoint,
-      teamPoint: user.teamPoint + addTeamPoint,
-      betPoint: user.betPoint + addBetPoint
     });
   }
 
@@ -115,8 +115,7 @@ export class AuthService {
   }
 
   private transformToUser(dbObject: any, id: string) {
-    return new User(id, dbObject.name, dbObject.email, dbObject.context, dbObject.point, dbObject.teamPoint,
-      dbObject.betPoint, dbObject.roles);
+    return new User(id, dbObject.name, dbObject.email, dbObject.context, dbObject.teamPoint, dbObject.betPoint, dbObject.roles);
   }
   private onAuthStateChanged(fUser: firebase.User) {
     if (!fUser) {

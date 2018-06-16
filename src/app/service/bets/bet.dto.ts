@@ -1,11 +1,4 @@
-import {Match, MatchResult, Team} from '../matches/match.dto';
-
-export class UserBetPoint {
-  user: string;
-  teamPoint: number;
-  roundPoint: number;
-  summ: number;
-}
+import {Match, MatchResult} from '../matches/match.dto';
 
 export class MatchResultBet extends Match {
   betId: string;
@@ -40,21 +33,12 @@ export class BetDto {
   }
 }
 
-export class BetContext {
-  user: string;
-  contextId: string;
-  results: Array<MatchResultBet>;
-  point: number;
-  constructor(user: string, contextId: string, results: Array<MatchResultBet>, point: number) {
-    this.user = user;
-    this.contextId = contextId;
-    this.results = results;
-    this.point = point;
-  }
-}
-
 export class TeamBetDto {
-  user: string;
-  point: number;
-  teams = new Array<string>(4).fill(null);
+  userId: string;
+  teams: Array<string>;
+
+  constructor(userId?: string, point?: number, teams?: Array<string>) {
+    this.userId = userId;
+    this.teams = teams || new Array<string>(4).fill(null);
+  }
 }

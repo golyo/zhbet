@@ -47,6 +47,9 @@ export class MatchResult {
     }
   }
   static fromString(resultStr: string): MatchResult {
+    if (!resultStr) {
+      return null;
+    }
     const results = resultStr.split(RESULT_DELIM);
     return results.length === 2 ? new MatchResult(parseInt(results[0]), parseInt(results[1])) : undefined;
   }

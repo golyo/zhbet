@@ -5,9 +5,12 @@ import {FirestoreCollectionService} from '../firestore-collection.service';
 import {AuthService} from '../auth/auth.service';
 import {Observable} from 'rxjs';
 import {TeamBetDto} from '../bets/bet.dto';
+import {BehaviorDefinedSubject} from '../../util/behavior-defined-subject';
 
 @Injectable()
 export class TeamService extends FirestoreCollectionService<Team> {
+
+  private teamBetSubject = new BehaviorDefinedSubject<Array<TeamBetDto>>();
 
   constructor(private store: AngularFirestore, private auth: AuthService) {
     super();
@@ -15,6 +18,22 @@ export class TeamService extends FirestoreCollectionService<Team> {
 
   public getTeamBet(rootContext: string): Observable<TeamBetDto> {
     return this.store.collection(`rootContext/${rootContext}/teamBet/`).doc<TeamBetDto>(this.auth.user.id).valueChanges();
+  }
+
+  getTeamBets(rootContext): Observable<Array<TeamBetDto>> {
+    if (!this.teamBetSubject.value) {
+      // const query: QueryFn = all ? undefined : ref => ref.where('context', '==', this._user.context);
+      this.store.collection<TeamBetDto>(`rootContext/${rootContext}/teamBet/`).valueChanges().subscribe(teamBets => {
+        this.teamBetSubject.next(teamBets);
+      });
+    }
+    return this.teamBetSubject.asObservable();
+  }
+
+  addTeamPoint(team: Team, diff: number): Promise<any> {
+    return this.getFinalCollection().doc(team.id).update({
+      point: team.point + diff
+    });
   }
 
   public updateTeamBet(rootContext, teamBet: TeamBetDto): Promise<any> {

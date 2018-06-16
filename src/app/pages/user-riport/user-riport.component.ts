@@ -28,9 +28,11 @@ export class UserRiportComponent implements OnInit, OnDestroy {
       this.displayedColumns.splice(2,1);
     }
     this.spinner.show();
-    this.userSubscription = this.authService.getUsers(true).subscribe(users => {
-      this.users = users;
-      this.dataSource = new MatTableDataSource<User>(users);
+    this.userSubscription = this.authService.getUsers().subscribe(users => {
+      this.users = users.sort((a, b) => {
+        return  b.teamPoint + b.betPoint - a.teamPoint - a.betPoint;
+      });
+      this.dataSource = new MatTableDataSource<User>(this.users);
       this.spinner.hide();
     });
   }
