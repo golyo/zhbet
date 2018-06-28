@@ -13,7 +13,7 @@ export class Match {
     this.home = home;
     this.away = away;
     this.start = start;
-    this.isRunning = new Date().getTime() - start.getTime() > 0;
+    this.isRunning = start &&  (new Date().getTime() > start.getTime());
     this.result = result;
   }
 }
