@@ -23,6 +23,10 @@ export abstract class FirestoreCollectionService<T> {
     return this.collectionSubject.asObservable();
   }
 
+  getLoadedItems(): Observable<Array<T>> {
+    return this.collectionSubject.asObservable();
+  }
+
   update(id: string, item: T): Promise<void> {
     return this.getFinalCollection().doc(id).update(this.transformToUpdateDbObject(item));
   }
@@ -42,7 +46,7 @@ export abstract class FirestoreCollectionService<T> {
     }
   }
 
-  protected getOrigParams() {
+  protected getOrigParams(): string[] {
     return this.prevParams;
   }
 

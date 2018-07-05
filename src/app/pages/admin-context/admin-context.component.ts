@@ -84,6 +84,14 @@ export class AdminContextComponent implements OnInit, OnDestroy {
     });
   }
 
+  addTeamForwardPoints() {
+    this.matchService.addTeamForwardPointsToSelectedContext().then(() => {
+      this.snack.open('Team forward points added!', '', {
+        duration: 3000
+      });
+    });
+  }
+
   onSelectNode(context: MatchContext) {
     this.selectedContext = context;
   }

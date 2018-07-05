@@ -8,6 +8,7 @@ import {BetDto, MatchResultBet, TeamBetDto} from '../bets/bet.dto';
 import {User, UserPointDiff} from '../auth/user.dto';
 import {POINT_RULE} from '../bets/bet-point-rules';
 import {AuthService} from '../auth/auth.service';
+import {MatchContext} from '../context/context.dto';
 
 @Injectable()
 export class MatchService extends FirestoreCollectionService<Match> {
@@ -17,10 +18,27 @@ export class MatchService extends FirestoreCollectionService<Match> {
     super();
   }
 
+  addTeamForwardPointsToSelectedContext(): Promise<boolean> {
+    console.log('Add teamForwardPoints', this.getOrigParams());
+    return new Promise((resolve, reject) => {
+      const authSubscription = this.authService.getUsers().subscribe(users => {
+        console.log('USERS loaded', users);
+        const teamSubscription = this.teamService.getTeamBets(this.getOrigParams()[0]).subscribe(teamBets => {
+          console.log('teamBets loaded', teamBets);
+          const matchSubscription = this.getLoadedItems().subscribe(matches => {
+              console.log('matches loaded', matches);
+              this.updateTeamForwardPoints(users, teamBets, matches).then(() => resolve(true));
+              authSubscription.unsubscribe();
+              teamSubscription.unsubscribe();
+              if (matchSubscription) {
+                matchSubscription.unsubscribe();
+              }
+            });
+        });
+      });
+    });
+  }
   updateResult(match: Match): Promise<boolean> {
-    // Update team points
-    // Update bet points
-    // Update User points
     return new Promise((resolve, reject) => {
       const authSubscription = this.authService.getUsers().subscribe(users => {
         console.log('USERS loaded', users);
@@ -38,9 +56,34 @@ export class MatchService extends FirestoreCollectionService<Match> {
         });
       });
     });
-    // this.store.collection(`rootContext/${this.getOrigParams()[0]}/teamBet/`).
-    // this.store.collection(`this.store.collection(\`rootContext/${rootContext}/teamBet/\`)`);
-    // return this.getFinalCollection().doc(match.id).update({result: this.transformResultToObject(match.result)});
+  }
+
+  private updateTeamForwardPoints(users: Array<User>, teamBets: Array<TeamBetDto>, matches: Array<Match>): Promise<any> {
+    const userCollection = this.store.collection('users');
+    const batch = this.store.firestore.batch();
+    users.forEach(user => {
+      const extraPoint = this.getTeamForwardPoint(user.id, teamBets, matches);
+      if (extraPoint) {
+        console.log('Add extra point to user', user.id, user.name, extraPoint);
+        batch.update(userCollection.doc(user.id).ref, {
+          teamPoint: user.teamPoint + extraPoint
+        });
+      }
+    });
+    return batch.commit();
+  }
+
+  private getTeamForwardPoint(userId: string, teamBets: Array<TeamBetDto>, matches: Array<Match>): number {
+    const bet = teamBets.find((bet => bet.userId === userId));
+    let teamForward = 0;
+    if (bet) {
+      matches.forEach(match => {
+        if (bet.teams.findIndex(team => team === match.home) >= 0 || bet.teams.findIndex(team => team === match.away) >= 0) {
+          teamForward += POINT_RULE.teamForward;
+        }
+      });
+    }
+    return teamForward;
   }
 
   private updateUsersAndTeam(users: Array<User>, teamBets: Array<TeamBetDto>, bets: Array<BetDto>, match: Match): Promise<any> {
@@ -58,29 +101,6 @@ export class MatchService extends FirestoreCollectionService<Match> {
     batch.update(this.store.doc(path).ref, {result: this.transformResultToObject(match.result)});
     return batch.commit();
   }
-/*
-  private updateTeamPoints(rootId: string, match: Match) {
-    this.teamSubscription = this.teamService.getItems(rootId).subscribe(teams => {
-      if (teams) {
-        this.teamSubscription.unsubscribe();
-        if (match.result.result === MatchFlag.HOME) {
-          this.addTeamPoint(teams, match.home, WIN_TEAM_POINT);
-        } else if (match.result.result === MatchFlag.AWAY) {
-          this.addTeamPoint(teams, match.away, WIN_TEAM_POINT);
-        } else {
-          this.addTeamPoint(teams, match.home, DRAW_TEAM_POINT);
-          this.addTeamPoint(teams, match.away, DRAW_TEAM_POINT);
-        }
-      }
-    });
-  }
-
-  private addTeamPoint(teams: Array<Team>, teamName: string, point: number) {
-    const team = teams.find(team => team.name === teamName);
-    console.log('ADD team point', team, point);
-    // this.teamService.addTeamPoint(team, point).then();
-  }
-*/
   protected getItemCollection(params: string[]): AngularFirestoreCollection<Match> {
     return this.store.collection('rootContext').doc(params[0]).collection<Match>('matchContext')
       .doc(params[1]).collection<Match>('matches');
